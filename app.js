@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 
-const apiBaseRouter = require('./routers/apiBaseRouter');
+const apiBaseRouter = require('./app/routers/apiBaseRouter');
 
 const app = express();
 app.use('/api',apiBaseRouter);
