@@ -1,7 +1,7 @@
-const express = require('express');
-const webhookController = require('../controllers/webhookController')
+//const express = require('express');
+const webhookController = require('../controllers/webhookController').default
 
-const router = express.Router();
+//const router = express.Router();
 
 const authenticate = (req,res,next)=>{        ///Just a placeholder, would later be replaced with an actual auth controller
     const {webhookId, token} = req.params;

@@ -1,4 +1,4 @@
-const DBHandler = require('../models/dbHandler');
+import {DBHandler} from '../models/dbHandler';
 
 
 
@@ -6,8 +6,8 @@ const DBHandler = require('../models/dbHandler');
 const webhookController = {
     
     //initialize DB or sm
-    rootURI(req,res){
-        const dbname = DBHandler.getDBInstance().authenticate();
+    async rootURI(req,res){
+        const dbname = DBHandler.getDBInstance().fetchDatabaseVersion();
         if(!dbname){
             res.send("NO DB Instance!"); ///crude way to test bas 
         }
@@ -17,4 +17,4 @@ const webhookController = {
     
 }
 
-module.exports=webhookController;
+module.exports =  webhookController;
