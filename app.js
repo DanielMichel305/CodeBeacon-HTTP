@@ -7,7 +7,7 @@ const app = express();
 app.use('/api',apiBaseRouter);
 
 app.get('/', (req,res)=>{
-    res.send('Hello world')
+    res.send('Hello world !')
 });
 
 
