@@ -1,9 +1,9 @@
-const express = require('express');
+import express, {Application} from 'express';
 require('dotenv').config();
 
-const apiBaseRouter = require('./app/routers/apiBaseRouter');
+import apiBaseRouter from './app/routers/apiBaseRouter';
 
-const app = express();
+const app : Application = express();
 app.use('/api',apiBaseRouter);
 
 app.get('/', (req,res)=>{

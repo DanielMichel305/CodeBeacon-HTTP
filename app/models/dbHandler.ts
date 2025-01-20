@@ -28,7 +28,7 @@ export class DBHandler  {  //This aint working
                 port: Number(process.env.SCD_DB1_PORT),
             });
             this.sequelize.authenticate()
-                .then(()=>console.log("DB CONNECTED!"))
+                .then(()=>console.log("DB CONNECTED!!!!!"))
                 .catch(()=>console.log("DB CONN FAILED"));
        
     }

@@ -1,6 +1,10 @@
-const router = require('express').Router();
-const webhookRouter = require('./webhookRouter')
+// export const router = require('express').Router();
+// const webhookRouter = require('./webhookRouter')
+import express, {Router} from 'express';
+import webhookRouter from "./webhookRouter";
 
-router.use('/webhooks', webhookRouter)
+const apiBaseRouter: Router = express.Router();
 
-module.exports=router;
+apiBaseRouter.use('/webhooks', webhookRouter)
+
+export default apiBaseRouter;

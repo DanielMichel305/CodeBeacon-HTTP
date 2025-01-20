@@ -3,7 +3,7 @@ import {DBHandler} from '../models/dbHandler';
 
 
 
-const webhookController = {
+export const webhookController = {
     
     //initialize DB or sm
     async rootURI(req,res){
@@ -11,10 +11,10 @@ const webhookController = {
         if(!dbname){
             res.send("NO DB Instance!"); ///crude way to test bas 
         }
-        else res.send(dbname);
+        else res.send("CONN SUCCESS");
     }
 
     
 }
 
-module.exports =  webhookController;
+//module.exports =  webhookController;
