@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto';
 import {DBHandler} from '../models/dbHandler';
 import {WebhookTokens} from '../models/webhooktokensmodel';
 import {Request, Response} from 'express';
+import { Inspections } from '../models/inpectionsmodel';
 
 
 export const webhookController = {

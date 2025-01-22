@@ -1,13 +1,12 @@
 import { Sequelize,Model,Optional,DataTypes, InferAttributes, InferCreationAttributes } from "sequelize";
 import { DBHandler } from "./dbHandler";
-import { Json } from "sequelize/lib/utils";
 
 
 const sequelize = DBHandler.getDBInstance();
 
 export class Inspections extends Model<InferAttributes<Inspections>,InferCreationAttributes<Inspections>>{
     declare webhook_id: string;
-    declare inspection_json: Json;
+    declare inspection_json: string;
 }
 
 Inspections.init({
@@ -16,7 +15,7 @@ Inspections.init({
         primaryKey: true
     },
     inspection_json : {
-        type: DataTypes.JSON
+        type: DataTypes.STRING
     }
     
 },{
@@ -26,23 +25,3 @@ Inspections.init({
 });
 
 
-export const inpectionModel = DBHandler.getDBInstance().define('inspections',{
-
-    webhook_id :{
-        type : DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        primaryKey: true
-    },
-    inspection_JSON : {
-        type : DataTypes.JSON,
-        allowNull: false
-    }
-});
-
-try {
-    inpectionModel.sync();
-}
-catch(err){
-    console.log("Error Syncing inspections table")
-}
