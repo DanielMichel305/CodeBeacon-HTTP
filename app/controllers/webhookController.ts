@@ -20,8 +20,6 @@ export const webhookController = {
         });
     },
     async createWebhook(req:Request,res:Response){          //this needs to protected behind user api / have auth
-        ///1-generate WebhookId and Token
-        ///2-store webhook 
         const webhookId  = randomBytes(6).toString('hex'); ///find another way ?
         const token = randomBytes(10).toString('hex');
         //maybe have this part (discord channel) of the setup proccess bot side.
@@ -33,10 +31,30 @@ export const webhookController = {
 
 
     },
-    async webhookListener(req,res){
-        ///1-check webhook after authentication
+    async webhookListener(req :Request,res: Response){
+        ///1-check webhook after authentication (already checked by 'fake' auth middleware)
         ///2-save sent data
         ///3-send/publish relative data into rabbit mq (implement MQ Handler) 
+
+
+        
+        const {webhookId, token} = req.params;
+        const inspectionObejct = req.body.inspection;  ///refer to scrutinizer documentation
+        const inspectionId = randomBytes(12).toString('hex');       
+        const inspection = await Inspections.create({inspection_id:inspectionId , webhook_id : webhookId, inspection_json: JSON.stringify(inspectionObejct)})       ///Maybe wrap this in a try catch instead of creating this inspection const
+        if(inspection){ //success
+            res.status(200).json({
+                status : "sucess",
+                inspection_id : inspection.inspection_id 
+            });
+        }
+        else{
+            res.status(500).json({
+                status : "Faliure",
+                message : "server Error"
+            })
+        }
+        
     }
 
 

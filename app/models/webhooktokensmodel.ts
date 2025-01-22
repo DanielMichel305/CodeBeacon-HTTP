@@ -37,3 +37,10 @@ WebhookTokens.init({
 );
 
 
+WebhookTokens.sync({ alter: true })  
+  .then(() => {
+    console.log('Inspection Table synced');
+  })
+  .catch(err => {
+    console.error('Failed to sync Inspections table:', err);
+  });

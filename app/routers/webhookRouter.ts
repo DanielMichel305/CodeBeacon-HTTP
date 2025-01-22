@@ -13,6 +13,7 @@ const authenticate = (req,res,next)=>{        ///Just a placeholder, would later
 };
 
 webhookRouter.get('/root', webhookController.createWebhook);
+webhookRouter.post('/:webhookId/:token', authenticate, webhookController.webhookListener)
 
 
 webhookRouter.get('/:webhookId/:token', authenticate, (req,res)=>{

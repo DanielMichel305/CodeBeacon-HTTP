@@ -1,18 +1,24 @@
-import { Sequelize,Model,Optional,DataTypes, InferAttributes, InferCreationAttributes } from "sequelize";
+import { Sequelize,Model,Optional,DataTypes, InferAttributes, InferCreationAttributes , ForeignKey} from "sequelize";
 import { DBHandler } from "./dbHandler";
+import { WebhookTokens } from "./webhooktokensmodel";
 
 
 const sequelize = DBHandler.getDBInstance();
 
 export class Inspections extends Model<InferAttributes<Inspections>,InferCreationAttributes<Inspections>>{
-    declare webhook_id: string;
+    declare inspection_id: string;
+    declare webhook_id:  ForeignKey<WebhookTokens['webhook_id']>;
     declare inspection_json: string;
 }
 
 Inspections.init({
-    webhook_id:{
-        type : DataTypes.CHAR(32),
+    inspection_id:{
+        type: DataTypes.CHAR(32),
         primaryKey: true
+
+    },
+    webhook_id:{
+        type : DataTypes.CHAR(32)
     },
     inspection_json : {
         type: DataTypes.STRING
@@ -24,4 +30,13 @@ Inspections.init({
 
 });
 
+
+
+Inspections.sync({ alter: true })  
+  .then(() => {
+    console.log('Inspection Table synced');
+  })
+  .catch(err => {
+    console.error('Failed to sync Inspections table:', err);
+  });
 
