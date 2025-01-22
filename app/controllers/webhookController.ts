@@ -1,5 +1,5 @@
 import {DBHandler} from '../models/dbHandler';
-import { webhook_tokens } from '../models/webhooktokens';
+import { webhook_tokens } from '../models/webhooktokensmodel';
 
 
 
@@ -17,6 +17,9 @@ export const webhookController = {
             description: description
         });
     }
+
+
+
 
     
 }
