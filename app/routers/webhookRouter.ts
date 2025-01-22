@@ -12,7 +12,7 @@ const authenticate = (req,res,next)=>{        ///Just a placeholder, would later
     else next();
 };
 
-webhookRouter.get('/root', webhookController.rootURI);
+webhookRouter.get('/root', webhookController.createWebhook);
 
 
 webhookRouter.get('/:webhookId/:token', authenticate, (req,res)=>{
