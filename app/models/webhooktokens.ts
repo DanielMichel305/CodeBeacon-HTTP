@@ -3,12 +3,6 @@ import {Sequelize, Model, Optional} from 'sequelize';
 import {DataTypes} from "@sequelize/core";
 
 
-interface webhook_tokens_attr {     
-    user_token: String;
-    webhook_id: String;
-    discord_channel_id: String
-    date_created : Date
-}
 
 export const webhook_tokens = DBHandler.getDBInstance().define('webhook_tokens', {
     

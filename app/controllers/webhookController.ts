@@ -1,5 +1,5 @@
 import {DBHandler} from '../models/dbHandler';
-import { webhook_tokens } from '../models/InspectionModel';
+import { webhook_tokens } from '../models/webhooktokens';
 
 
 
