@@ -1,35 +1,39 @@
 import { DBHandler } from "./dbHandler";
-import {Sequelize, Model, Optional} from 'sequelize';
-import {DataTypes} from "@sequelize/core";
+import {Model, InferAttributes, InferCreationAttributes,DataTypes} from 'sequelize';
+
+
+const sequelize = DBHandler.getDBInstance();
 
 
 
-export const webhook_tokens = DBHandler.getDBInstance().define('webhook_tokens', {
-    
-    webhook_id :{
-        type: DataTypes.CHAR(32),
-        allowNull: false,
-        unique: true,
-        primaryKey: true
+export class WebhookTokens extends Model<InferAttributes<WebhookTokens>,InferCreationAttributes<WebhookTokens>>{
+
+    declare webhook_id: string;
+    declare token: string;
+    declare discord_channel_id?: string;
+
+}
+
+WebhookTokens.init({
+        webhook_id :{
+            type: DataTypes.CHAR(32),
+            allowNull: false,
+            unique: true,
+            primaryKey: true
+        },
+        token :{
+            type: DataTypes.CHAR(32),
+            allowNull: false,
+            unique: true 
+        },
+        discord_channel_id :{
+            type: DataTypes.CHAR(32)
+        }
     },
-    token :{
-        type: DataTypes.CHAR(32),
-        allowNull: false,
-        unique: true 
-    },
-    discord_channel_id :{
-        type: DataTypes.CHAR(32)
-    },
-    date_created:{
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+    {
+        sequelize,
+        tableName:'webhook_tokens'
     }
+);
 
-});
 
-try {           ////This code is shit//idk if it even works 😭(sob emoji)
-    webhook_tokens.sync({alter:true});
-}
-catch(err){
-    console.log("Error syncing DB");
-}

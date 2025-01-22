@@ -1,4 +1,4 @@
-import { Sequelize } from '@sequelize/core';
+import { Sequelize } from 'sequelize';
 import { MySqlDialect } from '@sequelize/mysql';
 
 require('dotenv').config();
@@ -19,20 +19,23 @@ export class DBHandler  {  //This aint working
 
     private constructor(){
         
-            this.sequelize = new Sequelize({
-                dialect: MySqlDialect,
-                database: process.env.SCD_DB1_DATABASE,
-                user: process.env.SCD_DB1_USER,              
-                password: process.env.SCD_DB1_PASS,
-                host: process.env.SCD_DB1_HOST,
-                port: Number(process.env.SCD_DB1_PORT),
-            });
+            this.sequelize = new Sequelize(
+                process.env.SCD_DB1_DATABASE as string,
+                 process.env.SCD_DB1_USER as string,              
+                 process.env.SCD_DB1_PASS as string,
+                 {
+                    dialect: 'mysql',
+                    host: process.env.SCD_DB1_HOST,
+                    port: Number(process.env.SCD_DB1_PORT)
+                }
+               
+            );
             this.sequelize.authenticate()
                 .then(()=>console.log("DB CONNECTED!!!!!"))
                 .catch(()=>console.log("DB CONN FAILED"));
        
     }
-    public static getDBInstance(){
+    public static getDBInstance(): Sequelize{
         if(!DBHandler.instance){
             DBHandler.instance = new DBHandler();
         }
