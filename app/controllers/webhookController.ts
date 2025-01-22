@@ -1,5 +1,5 @@
 import {DBHandler} from '../models/dbHandler';
-
+import { webhook_tokens } from '../models/InspectionModel';
 
 
 
@@ -8,10 +8,14 @@ export const webhookController = {
     //initialize DB or sm
     async rootURI(req,res){
         const dbname = DBHandler.getDBInstance().fetchDatabaseVersion();
-        if(!dbname){
+        const description = await webhook_tokens.describe()
+        if(!dbname || !description){
             res.send("NO DB Instance!"); ///crude way to test bas 
         }
-        else res.send("CONN SUCCESS");
+        else res.send({
+            status : "Success",
+            description: description
+        });
     }
 
     
