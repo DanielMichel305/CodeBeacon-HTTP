@@ -5,6 +5,7 @@ import {Request, Response} from 'express';
 import { Inspections } from '../models/inpectionsmodel';
 import {MQHandler} from "../utils/MQHandler";
 
+const channel = new MQHandler('SCD-DISCORD-QUEUE');     ///This is just crude way to ensure connection creation (will be fixed)
 
 export const webhookController = {
     
@@ -43,21 +44,26 @@ export const webhookController = {
         const inspectionObejct = req.body.inspection;  ///refer to scrutinizer documentation
         const inspectionId = randomBytes(12).toString('hex');       
         const inspection = await Inspections.create({inspection_id:inspectionId , webhook_id : webhookId, inspection_json: JSON.stringify(inspectionObejct)})       ///Maybe wrap this in a try catch instead of creating this inspection const
-        if(inspection){ //success
-            res.status(200).json({
-                status : "sucess",
-                inspection_id : inspection.inspection_id 
-            });
-        }
-        else{
+        if(!inspection){ //success
             res.status(500).json({
                 status : "Faliure",
                 message : "server Error"
             })
         }
-        const channel = new MQHandler('SCD-DISCORD-QUEUE');
-        channel.sendMessage('SCD-DISCORD-QUEUE', "HELLO");
         
+        const inspectionMessage = {
+            inspection_id : inspection.inspection_id,
+            createdAt: Date.now(), /// Maybe find a way to get the actual time of creation that was a couple ms ago...just maybe
+            buildStatus : JSON.parse(inspection.inspection_json).status
+
+        };  ///just doin this for logging
+        channel.sendMessage('SCD-DISCORD-QUEUE', JSON.stringify(inspectionMessage)); // so a JSON needs to be stingifieddd first
+        res.status(200).json({
+            status : "sucess",
+            inspectionData : inspectionMessage 
+        });
+
+
     }
 
 
