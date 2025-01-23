@@ -3,6 +3,7 @@ import {DBHandler} from '../models/dbHandler';
 import {WebhookTokens} from '../models/webhooktokensmodel';
 import {Request, Response} from 'express';
 import { Inspections } from '../models/inpectionsmodel';
+import {MQHandler} from "../utils/MQHandler";
 
 
 export const webhookController = {
@@ -54,6 +55,8 @@ export const webhookController = {
                 message : "server Error"
             })
         }
+        const channel = new MQHandler('SCD-DISCORD-QUEUE');
+        channel.sendMessage('SCD-DISCORD-QUEUE', "HELLO");
         
     }
 
