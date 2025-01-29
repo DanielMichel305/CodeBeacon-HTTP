@@ -1,5 +1,4 @@
-import amqp from 'amqplib/callback_api';
-//const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib/callback_api');
 require('dotenv').config();
 
 //This class can either be a singleton and hae a way to create multiple channels and have them accessible anywhere in the code.
@@ -8,13 +7,10 @@ require('dotenv').config();
 
 ///This needs some refactoring and more error/edgecase handling 
 export class MQHandler {
-    private instance : MQHandler | null; 
-    private channel: amqp.Channel;
-    private connection: amqp.Connection;
+     
+    constructor(queueName, durable  = true)  {       ///I kinda don't like this
 
-    public constructor(queueName: string, durable :boolean = true)  {       ///I kinda don't like this
-
-        const rmqConnectionUrl : string = process.env.SCD_RMQ_URL as string;
+        const rmqConnectionUrl = process.env.SCD_RMQ_URL ;
 
         amqp.connect(rmqConnectionUrl,(err0,connection)=>{
             if(err0) throw err0; ///bad error handler
@@ -35,7 +31,7 @@ export class MQHandler {
         });
 
     }
-    public sendMessage(queue: string , messageData : any){
+    sendMessage(queue , messageData ){
         if(!this.channel || !this.connection){
             throw new Error('MessageQueueNotReady');
 

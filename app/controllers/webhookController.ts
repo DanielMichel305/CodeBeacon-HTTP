@@ -3,7 +3,7 @@ import {DBHandler} from '../models/dbHandler';
 import {WebhookTokens} from '../models/webhooktokensmodel';
 import {Request, Response} from 'express';
 import { Inspections } from '../models/inpectionsmodel';
-import {MQHandler} from "../utils/MQHandler";
+import {MQHandler} from "../utils/MQHandler-CrossCompatible";           //Using the Cross Compatible version
 
 const channel = new MQHandler('SCD-DISCORD-QUEUE');     ///This is just crude way to ensure connection creation (will be fixed)
 
