@@ -17,7 +17,7 @@ webhookRouter.post('/:webhookId/:token', authenticate, webhookController.webhook
 
 
 webhookRouter.get('/:webhookId/:token', authenticate, (req,res)=>{
-    //https://discord.com/api/webhooks/1329203449035886652/eA8N4__rYZ8u9ba594_Z81mj3tK_ooL6u4WVVYTrcx5y7JJr1o-5te4sGZKHyQ32wuoK
+    
     res.send(`/api/webhooks/${req.params.webhookId}/${req.params.token}`);
 });
 
