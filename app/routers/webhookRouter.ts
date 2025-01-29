@@ -1,9 +1,9 @@
-import express, {Router} from 'express';
+import express, {NextFunction, Request, Response, Router} from 'express';
 import {webhookController} from '../controllers/webhookController';
 
 const webhookRouter : Router = express.Router();
 
-const authenticate = (req,res,next)=>{        ///Just a placeholder, would later be replaced with an actual auth controller
+const authenticate = (req: Request,res: Response,next: NextFunction)=>{        ///Just a placeholder, would later be replaced with an actual auth controller
     const {webhookId, token} = req.params;
     console.log(req.params)
     if(!webhookId || !token){
