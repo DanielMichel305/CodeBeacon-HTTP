@@ -6,21 +6,24 @@ require('dotenv').config();
 
 
 ///This needs some refactoring and more error/edgecase handling 
-export class MQHandler {
-     
+class MQHandler {
+    
+    #channel
+    #connection
+
     constructor(queueName, durable  = true)  {       ///I kinda don't like this
 
         const rmqConnectionUrl = process.env.SCD_RMQ_URL ;
 
         amqp.connect(rmqConnectionUrl,(err0,connection)=>{
             if(err0) throw err0; ///bad error handler
-            connection.createChannel((err1,channel)=>{
+            this.#connection.createChannel((err1,channel)=>{
                 if(err1) throw err1;
                 
-                this.connection = connection
-                this.channel = channel
+                this.#connection = connection
+                this.#channel = channel
         
-                this.channel.assertQueue(queueName, {
+                this.#channel.assertQueue(queueName, {
                     durable: durable    ///JUST CHANGER THIISS
                 });
 
@@ -32,7 +35,7 @@ export class MQHandler {
 
     }
     sendMessage(queue , messageData ){
-        if(!this.channel || !this.connection){
+        if(!this.#channel || !this.#connection){
             throw new Error('MessageQueueNotReady');
 
         }
@@ -43,9 +46,26 @@ export class MQHandler {
         }
        
     }
+    listenToQueue(queue){
+        this.#channel.assertQueue(queue, {
+            durable: true
+        });
+
+        console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
+
+        this.#channel.consume(queue, function(msg) {
+            console.log(" [x] Received %s", msg.content.toString());
+        }, {
+            noAck: false
+        });
+    
+    }
+
+
 }
 
 
 
 
 
+module.exports = MQHandler;

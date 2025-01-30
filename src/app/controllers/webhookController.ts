@@ -3,14 +3,19 @@ import {DBHandler} from '../models/dbHandler';
 import {WebhookTokens} from '../models/webhooktokensmodel';
 import {Request, Response} from 'express';
 import { Inspections } from '../models/inpectionsmodel';
-import {MQHandler} from "../utils/MQHandler-CrossCompatible";           //Using the Cross Compatible version
+//import {MQHandler} from "../utils/MQHandler-CrossCompatible";           //Using the Cross Compatible version
 
+//import { MQHandler } from 'rmq-handler/src/MQHandler';
+import {MQHandler} from "../utils/MQHandler";
+
+//const MQHandler = require('../utils/MQHandler-CrossCompatible')      //THIS IS SHITE
 const channel = new MQHandler('SCD-DISCORD-QUEUE');     ///This is just crude way to ensure connection creation (will be fixed)
+channel.initConnection();
 
 export const webhookController = {
     
     //initialize DB or sm
-    async rootURI(req,res){
+    async rootURI(req: Request  ,res: Response){
         const dbname = DBHandler.getDBInstance().databaseVersion();
         const description = await WebhookTokens.describe()
         if(!dbname || !description){

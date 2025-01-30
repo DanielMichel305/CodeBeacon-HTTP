@@ -1,7 +1,12 @@
 import express, {Application} from 'express';
 import apiBaseRouter from './app/routers/apiBaseRouter';
 
+
+
+
 require('dotenv').config();
+
+console.log("Starting HTTP SERVER");
 
 const app : Application = express();
 
