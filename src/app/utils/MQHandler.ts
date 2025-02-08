@@ -1,4 +1,5 @@
 import * as amqp from "amqplib";
+import {EventEmitter} from "events";
 //const amqp = require('amqplib/callback_api');
 require('dotenv').config();
 
@@ -8,14 +9,39 @@ require('dotenv').config();
 
 
 ///This needs some refactoring and more error/edgecase handling 
-export class MQHandler {
+
+export class MQListener extends EventEmitter {
+
+    private messageQueueHandler: MQHandler;
+
+    constructor(mqHandler: MQHandler){
+        super();
+        this.messageQueueHandler = mqHandler;
+    }
+    public async init(){        ///I don't like this 5ales bardo
+        await this.messageQueueHandler.getChannel()?.assertQueue(this.messageQueueHandler.getQueueDefaultName())
+        this.messageQueueHandler.getChannel()?.consume(this.messageQueueHandler.getQueueDefaultName(), (msg)=>{
+            if(msg) {
+                this.emit(`message`, msg.content.toString());
+                this.messageQueueHandler.getChannel()?.ack(msg)
+            }
+        },{noAck:false});
+    }
+
+}
+
+
+
+export class MQHandler{
     private instance : MQHandler | null = null; 
     private channel: amqp.Channel | null = null;
     private connection: amqp.Connection | null=null;
     
 
 
-    public constructor(private queueName: string,private durable :boolean = true)  {}       ///I kinda don't like this ///Better??
+    public constructor(private queueName: string,private durable :boolean = true)  {
+        this.initConnection
+    }       ///I kinda don't like this ///Better??
 
 
     public async initConnection(){
@@ -43,7 +69,7 @@ export class MQHandler {
         }
        
     }
-    public async listenToQueue(queueName: string = this.queueName){
+    public async consumeLatest(queueName: string = this.queueName, timeoutMS : number = 2000){         ///Do better Error Handling
         if(!this.channel){
             console.error("Channel Not Initialized!");
             return;
@@ -52,12 +78,22 @@ export class MQHandler {
             durable: true
         });
 
-        console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queueName);
+        //console.log(" [*] Waiting for messages in %s.", queueName);
 
-        this.channel.consume(queueName, function(msg: amqp.Message | null) {
-            console.log(" [x] Received %s", msg?.content.toString());
-        }, {
-            noAck: false
+        return new Promise((resolve)=>{
+            const timeout = setTimeout(()=>{
+                resolve(null)
+            },timeoutMS);
+
+            this.channel?.consume(queueName, (msg: amqp.Message| null)=>{
+                if(msg){
+                    clearTimeout(timeout)
+                    this.channel?.ack(msg);
+                    resolve(msg);
+                }
+            },{
+                noAck:false
+            });
         });
     
     }
@@ -84,6 +120,12 @@ export class MQHandler {
             await this.connection.close();
         }
         console.log('RabbitMQ connection closed');
+    }
+    public getChannel(): amqp.Channel | null{       ///I DOn't this 5ales
+        return this.channel;
+    }
+    public getQueueDefaultName(): string{
+        return this.queueName;
     }
 }
 

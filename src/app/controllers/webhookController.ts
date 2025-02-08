@@ -6,12 +6,14 @@ import { Inspections } from '../models/inpectionsmodel';
 //import {MQHandler} from "../utils/MQHandler-CrossCompatible";           //Using the Cross Compatible version
 
 //import { MQHandler } from 'rmq-handler/src/MQHandler';
-import {MQHandler} from "../utils/MQHandler";
+import {MQHandler, MQListener} from "../utils/MQHandler";
 
 //const MQHandler = require('../utils/MQHandler-CrossCompatible')      //THIS IS SHITE
 const channel = new MQHandler('SCD-DISCORD-QUEUE');     ///This is just crude way to ensure connection creation (will be fixed)
-channel.initConnection();
 
+(async()=>{
+    await channel.initConnection();
+})();
 export const webhookController = {
     
     //initialize DB or sm
@@ -42,13 +44,11 @@ export const webhookController = {
         ///1-check webhook after authentication (already checked by 'fake' auth middleware)
         ///2-save sent data
         ///3-send/publish relative data into rabbit mq (implement MQ Handler) 
-
-
-        
-        const {webhookId, token} = req.params;
+   
+        const {webhookid, token} = req.params;
         const inspectionObejct = req.body.inspection;  ///refer to scrutinizer documentation
         const inspectionId = randomBytes(12).toString('hex');       
-        const inspection = await Inspections.create({inspection_id:inspectionId , webhook_id : webhookId, inspection_json: JSON.stringify(inspectionObejct)})       ///Maybe wrap this in a try catch instead of creating this inspection const
+        const inspection = await Inspections.create({inspection_id:inspectionId , webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)})       ///Maybe wrap this in a try catch instead of creating this inspection const
         if(!inspection){ //success
             res.status(500).json({
                 status : "Faliure",
@@ -69,7 +69,32 @@ export const webhookController = {
         });
 
 
-    }
+    },
+    async setupWebhookNotificationChannel(req: Request, res: Response){
+        console.log('Setup Notifications channel')
+        res.status(200).json({message: "OK"})
+        //return a short tansaction key maybe? 
+
+        /*
+            message = {
+                webhookid,
+                channelid
+            }
+        */ 
+
+
+        const channelListener = new MQListener(channel);
+        await channelListener.init();
+        console.log('awawa')
+        channelListener.on('message',(msg)=>{
+            console.log(JSON.stringify(msg));
+        });
+
+        //try a try-catch block for better error handling
+        
+
+
+    } 
 
 
 

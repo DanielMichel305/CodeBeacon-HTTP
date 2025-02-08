@@ -1,5 +1,5 @@
 import express, {NextFunction, Request, Response, Router} from 'express';
-import {webhookController} from '../controllers/webhookController';
+import {webhookController} from '../../controllers/webhookController';
 
 const webhookRouter : Router = express.Router();
 
@@ -13,8 +13,9 @@ const authenticate = (req: Request,res: Response,next: NextFunction)=>{        /
 };
 
 webhookRouter.get('/root', webhookController.createWebhook);
-webhookRouter.post('/:webhookId/:token', authenticate, webhookController.webhookListener)
+webhookRouter.post('/:webhookid/:token', authenticate, webhookController.webhookListener);
 
+webhookRouter.head('/:webhookid/notification',webhookController.setupWebhookNotificationChannel);       ///temp remove the authenticate middleware
 
 webhookRouter.get('/:webhookId/:token', authenticate, (req,res)=>{
     
