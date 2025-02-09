@@ -17,13 +17,13 @@ export class WebhookTokens extends Model<InferAttributes<WebhookTokens>,InferCre
 WebhookTokens.init({
         webhook_id :{
             type: DataTypes.CHAR(32),
-            allowNull: false,
-            unique: true,
+            allowNull: false, /////alowNull, unique and pk should be true!
+            unique: false,
             primaryKey: true
         },
         token :{
             type: DataTypes.CHAR(32),
-            allowNull: false,
+            allowNull: true,
             unique: true 
         },
         discord_channel_id :{

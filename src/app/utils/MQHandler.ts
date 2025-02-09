@@ -1,7 +1,6 @@
 import * as amqp from "amqplib";
 import {EventEmitter} from "events";
-//const amqp = require('amqplib/callback_api');
-require('dotenv').config();
+import {} from 'dotenv/config'
 
 //This class can either be a singleton and hae a way to create multiple channels and have them accessible anywhere in the code.
 //OR just be a normal class and when multiple channels are required then multiple objects are created
@@ -18,7 +17,7 @@ export class MQListener extends EventEmitter {
         super();
         this.messageQueueHandler = mqHandler;
     }
-    public async init(){        ///I don't like this 5ales bardo
+    public async init(){        
         await this.messageQueueHandler.getChannel()?.assertQueue(this.messageQueueHandler.getQueueDefaultName())
         this.messageQueueHandler.getChannel()?.consume(this.messageQueueHandler.getQueueDefaultName(), (msg)=>{
             if(msg) {

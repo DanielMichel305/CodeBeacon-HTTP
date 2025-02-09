@@ -63,7 +63,10 @@ export const webhookController = {
 
         };  ///just doin this for logging
         channel.sendMessage('SCD-DISCORD-QUEUE', JSON.stringify(inspectionMessage)); // so a JSON needs to be stingifieddd first
+        const user = await WebhookTokens.findOne({where : {webhook_id: webhookid}})
+        console.log("USER CID = ", user?.discord_channel_id);
         res.status(200).json({
+            discordChannel: user?.discord_channel_id,
             status : "sucess",
             inspectionData : inspectionMessage 
         });
@@ -78,7 +81,7 @@ export const webhookController = {
         /*
             message = {
                 webhookid,
-                channelid
+                channelId
             }
         */ 
 
@@ -86,8 +89,12 @@ export const webhookController = {
         const channelListener = new MQListener(channel);
         await channelListener.init();
         console.log('awawa')
-        channelListener.on('message',(msg)=>{
+        channelListener.on('message',async (msg)=>{
             console.log(JSON.stringify(msg));
+            msg = JSON.parse(msg);
+            console.log("PARSED MSG: ", msg)
+            await WebhookTokens.create({webhook_id: "556699",token:"null", discord_channel_id: msg.channelId})
+            console.log(`Added channel ID : ${msg.channelId} as channel for wid : ${556699}`);
         });
 
         //try a try-catch block for better error handling
