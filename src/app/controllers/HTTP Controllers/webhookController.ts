@@ -30,7 +30,7 @@ export const webhookController = {
         const webhookId  = randomBytes(6).toString('hex'); ///find another way ?
         const token = randomBytes(10).toString('hex');
         //maybe have this part (discord channel) of the setup proccess bot side.
-        const webhook = await WebhookTokens.create({webhook_id: webhookId, token:token});
+        const webhook = await WebhookTokens.create({webhook_id: webhookId, token:token, discord_guild_id: ""});
         res.status(200).json({
             url:`/api/webhooks/${webhook.webhook_id}/${webhook.token}`,     //fix the intellisense non existent error
             webhook: webhook.toJSON()

@@ -1,5 +1,6 @@
 import { MQHandler, MQListener } from "../utils/MQHandler";
 import {Channel, ConsumeMessage} from 'amqplib';
+import {WebhookTokens} from '../models/webhooktokensmodel';
 
 export class BaseEventController {
 
@@ -36,7 +37,8 @@ export class BaseEventController {
 
     }
 
-    public async botSetupRoutine(setupData: JSON){
+    public async botSetupRoutine(setupData: any){       ///change any to messageType
+        await WebhookTokens.create({webhook_id: "556699",token:"null", discord_channel_id: setupData.channelId, discord_guild_id: setupData.guildID});
         console.log('AGOGOAGAGA EGAGA AOAAGAGA');
     }
 

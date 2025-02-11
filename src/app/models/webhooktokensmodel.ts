@@ -11,6 +11,7 @@ export class WebhookTokens extends Model<InferAttributes<WebhookTokens>,InferCre
     declare webhook_id: string;
     declare token: string;
     declare discord_channel_id?: string;
+    declare discord_guild_id: string;
 
 }
 
@@ -27,6 +28,9 @@ WebhookTokens.init({
             unique: true 
         },
         discord_channel_id :{
+            type: DataTypes.CHAR(32)
+        },
+        discord_guild_id:{
             type: DataTypes.CHAR(32)
         }
     },
