@@ -13,6 +13,8 @@ import {} from 'dotenv/config'
 
 export class MQListener extends EventEmitter{
 
+
+
     private channel: amqp.Channel
 
     public constructor(channel: amqp.Channel){
@@ -43,7 +45,7 @@ export class MQHandler{
 
     private static instance: MQHandler 
     private static connection? : amqp.Connection;
-    private static channels?: Map<string, amqp.Channel>
+    private static channels: Map<string, amqp.Channel>
     public static url: string
 
     private  constructor(){
@@ -63,6 +65,7 @@ export class MQHandler{
     }
 
     public static async connect() : Promise<amqp.Connection>{
+        console.log('Initializing RMQ Connection');
         try {
             MQHandler.connection = await amqp.connect(MQHandler.url);
             console.log('Connection to RMQ initialized');
@@ -76,6 +79,9 @@ export class MQHandler{
     public static async createChannel(channelName: string): Promise<amqp.Channel>{
         if(!MQHandler.connection) {
             throw new Error("RabbitMQ Connection not initialized, Call connect() first");
+        }
+        if(this.channels?.has(channelName)){
+            return this.channels.get(channelName)!;
         }
         const channel = await MQHandler.connection.createChannel();
         this.channels?.set(channelName, channel);

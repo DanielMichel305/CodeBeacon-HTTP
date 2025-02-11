@@ -1,5 +1,5 @@
 import express, {NextFunction, Request, Response, Router} from 'express';
-import {webhookController} from '../../controllers/webhookController';
+import {webhookController} from '../../controllers/HTTP Controllers/webhookController';
 
 const webhookRouter : Router = express.Router();
 

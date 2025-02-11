@@ -1,9 +1,9 @@
 import { randomBytes } from 'crypto';
-import {DBHandler} from '../models/dbHandler';
-import {WebhookTokens} from '../models/webhooktokensmodel';
+import {DBHandler} from '../../models/dbHandler';
+import {WebhookTokens} from '../../models/webhooktokensmodel';
 import {Request, Response} from 'express';
-import { Inspections } from '../models/inpectionsmodel';
-import {MQHandler, MQListener} from "../utils/MQHandler";
+import { Inspections } from '../../models/inpectionsmodel';
+import {MQHandler, MQListener} from "../../utils/MQHandler";
 import { Channel } from 'amqplib';
 
 //const MQHandler = require('../utils/MQHandler-CrossCompatible')      //THIS IS SHITE
@@ -17,7 +17,7 @@ export const webhookController = {
     //initialize DB or sm
     async rootURI(req: Request  ,res: Response){
         const dbname = DBHandler.getDBInstance().databaseVersion();
-        const description = await WebhookTokens.describe()
+        const description = await WebhookTokens.describe();
         if(!dbname || !description){
             res.send("NO DB Instance!"); ///crude way to test bas 
         }
@@ -46,7 +46,7 @@ export const webhookController = {
         const {webhookid, token} = req.params;
         const inspectionObejct = req.body.inspection;  ///refer to scrutinizer documentation
         const inspectionId = randomBytes(12).toString('hex');       
-        const inspection = await Inspections.create({inspection_id:inspectionId , webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)})       ///Maybe wrap this in a try catch instead of creating this inspection const
+        const inspection = await Inspections.create({inspection_id:inspectionId , webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)});       ///Maybe wrap this in a try catch instead of creating this inspection const
         if(!inspection){ //success
             res.status(500).json({
                 status : "Faliure",
@@ -73,7 +73,7 @@ export const webhookController = {
 
     },
     async setupWebhookNotificationChannel(req: Request, res: Response){
-        console.log('Setup Notifications channel')
+        console.log('Setup Notifications channel \n\n   OLD ONEEEE AFTER HEADDD')
         res.status(200).json({message: "OK"})
         //return a short tansaction key maybe? 
 
@@ -87,17 +87,17 @@ export const webhookController = {
 
         
        
-        await MQHandler.connect();
-        const channel: Channel = await MQHandler.createChannel('SCD-CH1');
-        const queueListener = new MQListener(channel);
-        queueListener.subscribe('SCD-DISCORD-QUEUE',{noAck: false});
+        // await MQHandler.connect();
+        // const channel: Channel = await MQHandler.createChannel('SCD-CH1');
+        // const queueListener = new MQListener(channel);
+        // queueListener.subscribe('SCD-DISCORD-QUEUE',{noAck: false});
 
-        queueListener.on('messageReceived',async (msg)=>{
-            if(!msg) console.log('received null message');
-            msg = JSON.parse(msg.content.toString())
-            await WebhookTokens.create({webhook_id: "556699",token:"null", discord_channel_id:" msg.channelId"});
-            await MQHandler.getInstance().then(instance=>instance.close());
-        });
+        // queueListener.on('messageReceived',async (msg)=>{
+        //     if(!msg) console.log('received null message');
+        //     msg = JSON.parse(msg.content.toString())
+        //     await WebhookTokens.create({webhook_id: "556699",token:"null", discord_channel_id:" msg.channelId"});
+        //     await MQHandler.getInstance().then(instance=>instance.close());
+        // });
 
             
        
