@@ -3,17 +3,15 @@ import {DBHandler} from '../models/dbHandler';
 import {WebhookTokens} from '../models/webhooktokensmodel';
 import {Request, Response} from 'express';
 import { Inspections } from '../models/inpectionsmodel';
-//import {MQHandler} from "../utils/MQHandler-CrossCompatible";           //Using the Cross Compatible version
-
-//import { MQHandler } from 'rmq-handler/src/MQHandler';
 import {MQHandler, MQListener} from "../utils/MQHandler";
+import { Channel } from 'amqplib';
 
 //const MQHandler = require('../utils/MQHandler-CrossCompatible')      //THIS IS SHITE
-const channel = new MQHandler('SCD-DISCORD-QUEUE');     ///This is just crude way to ensure connection creation (will be fixed)
+     ///This is just crude way to ensure connection creation (will be fixed)
 
-(async()=>{
-    await channel.initConnection();
-})();
+MQHandler.url = process.env.SCD_RMQ_URL as string;
+
+
 export const webhookController = {
     
     //initialize DB or sm
@@ -62,7 +60,8 @@ export const webhookController = {
             buildStatus : JSON.parse(inspection.inspection_json).status
 
         };  ///just doin this for logging
-        channel.sendMessage('SCD-DISCORD-QUEUE', JSON.stringify(inspectionMessage)); // so a JSON needs to be stingifieddd first
+        
+        /////////////// so a JSON needs to be stingifieddd first
         const user = await WebhookTokens.findOne({where : {webhook_id: webhookid}})
         console.log("USER CID = ", user?.discord_channel_id);
         res.status(200).json({
@@ -86,16 +85,22 @@ export const webhookController = {
         */ 
 
 
-        const channelListener = new MQListener(channel);
-        await channelListener.init();
-        console.log('awawa')
-        channelListener.on('message',async (msg)=>{
-            console.log(JSON.stringify(msg));
-            msg = JSON.parse(msg);
-            console.log("PARSED MSG: ", msg)
-            await WebhookTokens.create({webhook_id: "556699",token:"null", discord_channel_id: msg.channelId})
-            console.log(`Added channel ID : ${msg.channelId} as channel for wid : ${556699}`);
+        
+       
+        await MQHandler.connect();
+        const channel: Channel = await MQHandler.createChannel('SCD-CH1');
+        const queueListener = new MQListener(channel);
+        queueListener.subscribe('SCD-DISCORD-QUEUE',{noAck: false});
+
+        queueListener.on('messageReceived',async (msg)=>{
+            if(!msg) console.log('received null message');
+            msg = JSON.parse(msg.content.toString())
+            await WebhookTokens.create({webhook_id: "556699",token:"null", discord_channel_id:" msg.channelId"});
+            await MQHandler.getInstance().then(instance=>instance.close());
         });
+
+            
+       
 
         //try a try-catch block for better error handling
         

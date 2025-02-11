@@ -3,132 +3,121 @@ import {EventEmitter} from "events";
 import {} from 'dotenv/config'
 
 //This class can either be a singleton and hae a way to create multiple channels and have them accessible anywhere in the code.
-//OR just be a normal class and when multiple channels are required then multiple objects are created
+//OR just be a normal class and when multiple channels are required then multiple objects are created(NO AIN'T GONNA HAPPEN)
 
 
 
 ///This needs some refactoring and more error/edgecase handling 
+//make this singleton??
 
-export class MQListener extends EventEmitter {
 
-    private messageQueueHandler: MQHandler;
+export class MQListener extends EventEmitter{
 
-    constructor(mqHandler: MQHandler){
+    private channel: amqp.Channel
+
+    public constructor(channel: amqp.Channel){
         super();
-        this.messageQueueHandler = mqHandler;
+        this.channel = channel;
+
     }
-    public async init(){        
-        await this.messageQueueHandler.getChannel()?.assertQueue(this.messageQueueHandler.getQueueDefaultName())
-        this.messageQueueHandler.getChannel()?.consume(this.messageQueueHandler.getQueueDefaultName(), (msg)=>{
-            if(msg) {
-                this.emit(`message`, msg.content.toString());
-                this.messageQueueHandler.getChannel()?.ack(msg)
+    public getChannel() : amqp.Channel{
+        return this.channel;
+    }
+    public async subscribe(queue: string, options: amqp.Options.Consume){
+        await this.channel.assertQueue(queue, {durable:true});
+        this.channel.consume(queue,(msg)=>{
+            if(msg){
+                this.emit("messageReceived", msg);
+                this.channel.ack(msg);
             }
-        },{noAck:false});
+            else{
+                console.log("Null message Received");
+            }
+        },options);
     }
 
 }
-
 
 
 export class MQHandler{
-    private instance : MQHandler | null = null; 
-    private channel: amqp.Channel | null = null;
-    private connection: amqp.Connection | null=null;
-    
 
+    private static instance: MQHandler 
+    private static connection? : amqp.Connection;
+    private static channels?: Map<string, amqp.Channel>
+    public static url: string
 
-    public constructor(private queueName: string,private durable :boolean = true)  {
-        this.initConnection
-    }       ///I kinda don't like this ///Better??
-
-
-    public async initConnection(){
-
-        const rmqConnectionUrl : string = process.env.SCD_RMQ_URL as string;
-        try {
-            this.connection = await amqp.connect(rmqConnectionUrl);
-            this.channel = await this.connection.createChannel();
-            
-        } catch (error) {
-            console.warn("Error initializing connection:\n", error);
-
-        }
-       
+    private  constructor(){
+        
     }
-    public async sendMessage(queueName: string = this.queueName , messageData : any){
-        if(!this.channel || !this.connection){
-            throw new Error('MessageQueueNotReadyError');
+
+
+    public static async getInstance() : Promise<MQHandler>{
+        if(!MQHandler.instance){
+            MQHandler.instance = new MQHandler();
+            MQHandler.connect()
+            return this.instance;
         }
         else{
-            this.channel.assertQueue(queueName)
-            this.channel.sendToQueue(queueName, Buffer.from(messageData), {
-                persistent: true
-            });
+            return MQHandler.instance;
         }
-       
     }
-    public async consumeLatest(queueName: string = this.queueName, timeoutMS : number = 2000){         ///Do better Error Handling
-        if(!this.channel){
-            console.error("Channel Not Initialized!");
-            return;
+
+    public static async connect() : Promise<amqp.Connection>{
+        try {
+            MQHandler.connection = await amqp.connect(MQHandler.url);
+            console.log('Connection to RMQ initialized');
+            return MQHandler.connection;
+        } catch (error) {
+            throw error;
         }
-        this.channel.assertQueue(queueName, {
-            durable: true
-        });
 
-        //console.log(" [*] Waiting for messages in %s.", queueName);
-
-        return new Promise((resolve)=>{
-            const timeout = setTimeout(()=>{
-                resolve(null)
-            },timeoutMS);
-
-            this.channel?.consume(queueName, (msg: amqp.Message| null)=>{
-                if(msg){
-                    clearTimeout(timeout)
-                    this.channel?.ack(msg);
-                    resolve(msg);
-                }
-            },{
-                noAck:false
-            });
-        });
+    }
     
-    }
-    public async attachQueueFunction(queueName: string=this.queueName, callback: (data: string)=> unknown){
-        if(!this.channel){
-            console.error("Channel Not Initialized!");
-            return;
+    public static async createChannel(channelName: string): Promise<amqp.Channel>{
+        if(!MQHandler.connection) {
+            throw new Error("RabbitMQ Connection not initialized, Call connect() first");
         }
-        this.channel.assertQueue(queueName, {
-            durable: true
-        });
-        this.channel.consume(queueName, function(msg: amqp.Message|null){
-            if(!msg){
-                return;
+        const channel = await MQHandler.connection.createChannel();
+        this.channels?.set(channelName, channel);
+        return channel;
+    }
+    public async sendToQueue(channel: amqp.Channel, queue: string, message: Buffer | any, options?: amqp.Options.Publish): Promise<void>{ ////any just so I can send anything I want (ideally would be just buffer/json)
+        
+        try{
+            await channel.assertQueue(queue, {durable: true}) /// force true for now
+            channel.sendToQueue(queue,message,options);
+
+        }
+        catch{
+            throw new Error("Queue assertion failed");
+        }
+        
+    }
+
+    public async publish(channel: amqp.Channel, exchange: string, routingKey: string, exchangeType: string = 'direct', message: Buffer | any, options? : amqp.Options.Publish) : Promise<void> {
+        try {
+            await channel.assertExchange(exchange, exchangeType, {durable: true});
+            channel.publish(exchange,routingKey,message,options);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async close(): Promise<void>{
+        if(MQHandler.channels){
+            for(const channel of MQHandler.channels.values()){
+                await channel.close()
             }
-            callback(msg.toString())
-        });
-    }
-    public async close(){
-        if (this.channel) {
-            await this.channel.close();
         }
-        if (this.connection) {
-            await this.connection.close();
+        if(MQHandler.connection){
+            await MQHandler.connection.close();
         }
-        console.log('RabbitMQ connection closed');
+        console.log("Closed all channels and terminated RMQ Connection");
+        
     }
-    public getChannel(): amqp.Channel | null{       ///I DOn't this 5ales
-        return this.channel;
-    }
-    public getQueueDefaultName(): string{
-        return this.queueName;
-    }
+
+
+
 }
-
-
-
 
 
