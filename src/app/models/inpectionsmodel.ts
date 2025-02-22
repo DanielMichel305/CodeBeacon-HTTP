@@ -19,6 +19,7 @@ Inspections.init({
     inspection_id:{
         type: DataTypes.CHAR(32),
         primaryKey: true
+
     },
     webhook_id:{
         type : DataTypes.CHAR(32)
@@ -30,13 +31,13 @@ Inspections.init({
         type: DataTypes.CHAR(32)
     },
     repo_name:{
-        type: DataTypes.CHAR(32)
+        type: DataTypes.CHAR(140)   ///39 for max username length and 100 for max repo name length 
     },
     inspection_creation_date:{
         type: DataTypes.DATE()
     },
     inspection_json : {
-        type: DataTypes.STRING()
+        type: DataTypes.TEXT()
     }
     
 },{

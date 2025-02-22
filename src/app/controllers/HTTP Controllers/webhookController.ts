@@ -12,6 +12,12 @@ import { Channel } from 'amqplib';
 MQHandler.url = process.env.SCD_RMQ_URL as string;
 
 
+function getRepoNameFromUrl(url: string){
+    const subStrings = url.split('/');
+    return subStrings[4] + '/' + subStrings[5];
+}
+
+
 export const webhookController = {
     
     //initialize DB or sm
@@ -30,9 +36,9 @@ export const webhookController = {
         const webhookId  = randomBytes(6).toString('hex'); ///find another way ?
         const token = randomBytes(10).toString('hex');
         //maybe have this part (discord channel) of the setup proccess bot side.
-        const webhook = await WebhookTokens.create({webhook_id: webhookId, token:token, discord_guild_id: ""});
+        const webhook = await WebhookTokens.create({webhook_id: webhookId, auth_token:token, discord_guild_id: ""});
         res.status(200).json({
-            url:`/api/webhooks/${webhook.webhook_id}/${webhook.token}`,     //fix the intellisense non existent error
+            url:`/api/webhooks/${webhook.webhook_id}/${webhook.auth_token}`,     //fix the intellisense non existent error
             webhook: webhook.toJSON()
         });
 
@@ -45,8 +51,13 @@ export const webhookController = {
    
         const {webhookid, token} = req.params;
         const inspectionObejct = req.body.inspection;  ///refer to scrutinizer documentation
-        const inspectionId = randomBytes(12).toString('hex');       
-        const inspection = await Inspections.create({inspection_id:inspectionId , webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)});       ///Maybe wrap this in a try catch instead of creating this inspection const
+        const inspectionId = randomBytes(12).toString('hex');
+        const inspectionState = inspectionObejct.state;
+        const inspectionBuildStatus = inspectionObejct.build.status;
+        const inspection_creation_date = inspectionObejct.created_at;
+        const repo_name = getRepoNameFromUrl(inspectionObejct._links.repository.href);
+
+        const inspection = await Inspections.create({inspection_id:inspectionId, state: inspectionState, build_status: inspectionBuildStatus, inspection_creation_date: inspection_creation_date , repo_name: repo_name ,  webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)});       ///Maybe wrap this in a try catch instead of creating this inspection const
         if(!inspection){ //success
             res.status(500).json({
                 status : "Faliure",
@@ -55,9 +66,9 @@ export const webhookController = {
         }
         
         const inspectionMessage = {
-            repoName: JSON.parse(inspection.inspection_json).repoName,
+            repoName: repo_name,
             inspection_id : inspection.inspection_id,
-            createdAt: Date.now(), /// Maybe find a way to get the actual time of creation that was a couple ms ago...just maybe
+            createdAt: inspection_creation_date, /// Maybe find a way to get the actual time of creation that was a couple ms ago...just maybe(FIXED)
             buildStatus : JSON.parse(inspection.inspection_json).status
 
         };  ///just doin this for logging

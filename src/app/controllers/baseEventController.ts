@@ -38,7 +38,7 @@ export class BaseEventController {
     }
 
     public async botSetupRoutine(setupData: any){       ///change any to messageType
-        await WebhookTokens.create({webhook_id: setupData.webhookId,token:"null", discord_channel_id: setupData.channelId, discord_guild_id: setupData.guildID});
+        await WebhookTokens.update({ discord_channel_id: setupData.channelId, discord_guild_id: setupData.guildID},{where: {webhook_id: setupData.webhookId}});
         console.log('AGOGOAGAGA EGAGA AOAAGAGA');
     }
 
