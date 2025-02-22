@@ -18,7 +18,8 @@ NotificationChannel.init({
         type: DataTypes.CHAR(20)
     },
     notification_type:{
-        type: DataTypes.SMALLINT()
+        type: DataTypes.SMALLINT(),
+        defaultValue: 0
     }
     },
     {
