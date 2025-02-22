@@ -1,0 +1,280 @@
+POST /test HTTP/1.1
+Host: codebeacon.requestcatcher.com
+Content-Length: 3918
+Content-Type: application/json
+User-Agent: Scrutinizer Hookshot
+X-Scrutinizer-Event: inspection.created
+X-Scrutinizer-Signature: 341b3dd8e2c27ec51eccafc91517a80f686b7fbf
+
+{
+    "uuid": "5eb2f195-60d4-4ad1-b1b7-4696315c4000",
+    "state": "new",
+    "created_at": "2025-02-20T12:11:31+00:00",
+    "metadata": {
+        "title": "testing webhook endpoint",
+        "branch": "master",
+        "source_reference": "3843ce20725bfe01b8cad7ff8b6f6aa5e2dab40c"
+    },
+    "nb_artifacts": 0,
+    "build": {
+        "status": "unknown"
+    },
+    "_links": {
+        "self": {
+            "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/inspections\/5eb2f195-60d4-4ad1-b1b7-4696315c4000"
+        },
+        "repository": {
+            "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-"
+        },
+        "artifacts": {
+            "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/inspections\/5eb2f195-60d4-4ad1-b1b7-4696315c4000\/artifacts"
+        }
+    },
+    "_embedded": {
+        "repository": {
+            "type": "g",
+            "config": "filter:\n    excluded_paths:\n        - '*.min.js'\n        - '*\/build\/*'\n        - '*\/dist\/*'\nchecks:\n    javascript: true\nbuild:\n    nodes:\n        analysis:\n            tests:\n                override:\n                    - js-scrutinizer-run\n        tests: true\n",
+            "created_at": "2025-01-03T14:45:06+00:00",
+            "private": false,
+            "applications": {
+                "master": {
+                    "index": {
+                        "source_reference": "3c25d30a96e82c21e3c97b7f3d776b5ef71ecfdf",
+                        "id": 10313329,
+                        "branch_reference": "master",
+                        "created_at": "2025-01-15T21:47:13+00:00",
+                        "outdated": false,
+                        "_links": {
+                            "issues": {
+                                "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/indices\/10313329\/issues"
+                            }
+                        },
+                        "_embedded": {
+                            "project": {
+                                "type": "system",
+                                "identifier": "",
+                                "metric_values": {
+                                    "sa.rqd": 0,
+                                    "scrutinizer.quality": 9.770833333333334,
+                                    "scrutinizer.weight.very_good": 88.5417,
+                                    "scrutinizer.weight.good": 11.4583,
+                                    "scrutinizer.weight.satisfactory": 0,
+                                    "scrutinizer.weight.pass": 0,
+                                    "scrutinizer.weight.critical": 0
+                                }
+                            }
+                        }
+                    },
+                    "build_status": {
+                        "status": "passed",
+                        "details": {
+                            "tests": {
+                                "previous_status": 1,
+                                "status": "passed"
+                            },
+                            "analysis": {
+                                "status": "passed"
+                            }
+                        }
+                    }
+                }
+            },
+            "development_report_settings": {
+                "enabled": true,
+                "weekday": 1,
+                "hour": 8,
+                "timezone": "UTC"
+            },
+            "branch_settings": {
+                "tracked_branches": [
+                    "master"
+                ]
+            },
+            "default_branch": "master",
+            "login": "DanielMichel305",
+            "name": "Backend-Login-Screen-",
+            "_links": {
+                "self": {
+                    "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-"
+                }
+            }
+        }
+    }
+}
+
+
+POST /test HTTP/1.1
+Host: codebeacon.requestcatcher.com
+Content-Length: 6644
+Content-Type: application/json
+User-Agent: Scrutinizer Hookshot
+X-Scrutinizer-Event: inspection.completed
+X-Scrutinizer-Signature: df8d7c52d2eeffa3e5913733db50461ae04f0f62
+
+{
+    "uuid": "5eb2f195-60d4-4ad1-b1b7-4696315c4000",
+    "state": "completed",
+    "created_at": "2025-02-20T12:11:31+00:00",
+    "started_at": "2025-02-20T12:11:33+00:00",
+    "finished_at": "2025-02-20T12:15:21+00:00",
+    "metadata": {
+        "title": "testing webhook endpoint",
+        "branch": "master",
+        "source_reference": "3843ce20725bfe01b8cad7ff8b6f6aa5e2dab40c"
+    },
+    "nb_artifacts": 0,
+    "build": {
+        "status": "passed",
+        "details": {
+            "tests": {
+                "previous_status": 1,
+                "status": "passed"
+            },
+            "analysis": {
+                "status": "passed"
+            }
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/inspections\/5eb2f195-60d4-4ad1-b1b7-4696315c4000"
+        },
+        "repository": {
+            "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-"
+        },
+        "artifacts": {
+            "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/inspections\/5eb2f195-60d4-4ad1-b1b7-4696315c4000\/artifacts"
+        }
+    },
+    "_embedded": {
+        "repository": {
+            "type": "g",
+            "config": "filter:\n    excluded_paths:\n        - '*.min.js'\n        - '*\/build\/*'\n        - '*\/dist\/*'\nchecks:\n    javascript: true\nbuild:\n    nodes:\n        analysis:\n            tests:\n                override:\n                    - js-scrutinizer-run\n        tests: true\n",
+            "created_at": "2025-01-03T14:45:06+00:00",
+            "private": false,
+            "applications": {
+                "master": {
+                    "index": {
+                        "source_reference": "3843ce20725bfe01b8cad7ff8b6f6aa5e2dab40c",
+                        "id": 10344010,
+                        "branch_reference": "master",
+                        "created_at": "2025-02-20T12:14:36+00:00",
+                        "outdated": false,
+                        "_links": {
+                            "issues": {
+                                "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/indices\/10344010\/issues"
+                            }
+                        },
+                        "_embedded": {
+                            "project": {
+                                "type": "system",
+                                "identifier": "",
+                                "metric_values": {
+                                    "sa.rqd": 0,
+                                    "scrutinizer.quality": 9.770833333333334,
+                                    "scrutinizer.weight.very_good": 88.5417,
+                                    "scrutinizer.weight.good": 11.4583,
+                                    "scrutinizer.weight.satisfactory": 0,
+                                    "scrutinizer.weight.pass": 0,
+                                    "scrutinizer.weight.critical": 0
+                                }
+                            }
+                        }
+                    },
+                    "build_status": {
+                        "status": "passed",
+                        "details": {
+                            "tests": {
+                                "previous_status": 1,
+                                "status": "passed"
+                            },
+                            "analysis": {
+                                "status": "passed"
+                            }
+                        }
+                    }
+                }
+            },
+            "development_report_settings": {
+                "enabled": true,
+                "weekday": 1,
+                "hour": 8,
+                "timezone": "UTC"
+            },
+            "branch_settings": {
+                "tracked_branches": [
+                    "master"
+                ]
+            },
+            "default_branch": "master",
+            "login": "DanielMichel305",
+            "name": "Backend-Login-Screen-",
+            "_links": {
+                "self": {
+                    "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-"
+                }
+            }
+        },
+        "head_index": {
+            "source_reference": "3843ce20725bfe01b8cad7ff8b6f6aa5e2dab40c",
+            "id": 10344010,
+            "branch_reference": "master",
+            "created_at": "2025-02-20T12:14:36+00:00",
+            "outdated": false,
+            "_links": {
+                "issues": {
+                    "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/indices\/10344010\/issues"
+                }
+            },
+            "_embedded": {
+                "project": {
+                    "type": "system",
+                    "identifier": "",
+                    "metric_values": {
+                        "sa.rqd": 0,
+                        "scrutinizer.quality": 9.770833333333334,
+                        "scrutinizer.weight.very_good": 88.5417,
+                        "scrutinizer.weight.good": 11.4583,
+                        "scrutinizer.weight.satisfactory": 0,
+                        "scrutinizer.weight.pass": 0,
+                        "scrutinizer.weight.critical": 0
+                    }
+                }
+            }
+        },
+        "base_index": {
+            "source_reference": "3c25d30a96e82c21e3c97b7f3d776b5ef71ecfdf",
+            "id": 10313329,
+            "branch_reference": "master",
+            "created_at": "2025-01-15T21:47:13+00:00",
+            "outdated": false,
+            "_links": {
+                "issues": {
+                    "href": "\/api\/repositories\/g\/DanielMichel305\/Backend-Login-Screen-\/indices\/10313329\/issues"
+                }
+            },
+            "_embedded": {
+                "project": {
+                    "type": "system",
+                    "identifier": "",
+                    "metric_values": {
+                        "sa.rqd": 0,
+                        "scrutinizer.quality": 9.770833333333334,
+                        "scrutinizer.weight.very_good": 88.5417,
+                        "scrutinizer.weight.good": 11.4583,
+                        "scrutinizer.weight.satisfactory": 0,
+                        "scrutinizer.weight.pass": 0,
+                        "scrutinizer.weight.critical": 0
+                    }
+                }
+            }
+        },
+        "index_diff": {
+            "nb_new_issues": 0,
+            "nb_fixed_issues": 0,
+            "nb_added_elements": 0,
+            "nb_changed_elements": 0,
+            "nb_removed_elements": 0
+        }
+    }
+}

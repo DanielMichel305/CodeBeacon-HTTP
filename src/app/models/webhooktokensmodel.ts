@@ -9,7 +9,7 @@ const sequelize = DBHandler.getDBInstance();
 export class WebhookTokens extends Model<InferAttributes<WebhookTokens>,InferCreationAttributes<WebhookTokens>>{
 
     declare webhook_id: string;
-    declare token: string;
+    declare auth_token: string;
     declare discord_channel_id?: string;
     declare discord_guild_id: string;
 
@@ -22,7 +22,7 @@ WebhookTokens.init({
             unique: false,
             primaryKey: true
         },
-        token :{
+        auth_token :{
             type: DataTypes.CHAR(32),
             allowNull: true,
             unique: true 

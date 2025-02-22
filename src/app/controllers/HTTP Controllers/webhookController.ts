@@ -55,21 +55,38 @@ export const webhookController = {
         }
         
         const inspectionMessage = {
+            repoName: JSON.parse(inspection.inspection_json).repoName,
             inspection_id : inspection.inspection_id,
             createdAt: Date.now(), /// Maybe find a way to get the actual time of creation that was a couple ms ago...just maybe
             buildStatus : JSON.parse(inspection.inspection_json).status
 
         };  ///just doin this for logging
+
         
         /////////////// so a JSON needs to be stingifieddd first
         const user = await WebhookTokens.findOne({where : {webhook_id: webhookid}})
         console.log("USER CID = ", user?.discord_channel_id);
-        res.status(200).json({
+        
+        const inspectionBody = {
+            guildId: user?.discord_guild_id,
             discordChannel: user?.discord_channel_id,
             status : "sucess",
             inspectionData : inspectionMessage 
-        });
+        }
 
+
+        
+
+        const channel : Channel = await MQHandler.createChannel('SCD-CH1');
+        (await MQHandler.getInstance()).sendToQueue(channel,"SCD-INSPECTION-CREATE", Buffer.from(JSON.stringify(inspectionBody)))
+        .then(()=>{
+            res.status(200).json(inspectionBody);
+        })
+        .catch(err=>{
+            console.log(`Error Sending Inpsection Data to Discord Bot, ${err}`);
+            res.status(500).json({message: "Error Sending Inspection Data to Discord Bot"});
+
+        })
 
     },
     async setupWebhookNotificationChannel(req: Request, res: Response){
