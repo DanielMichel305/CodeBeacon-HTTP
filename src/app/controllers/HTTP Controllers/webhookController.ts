@@ -5,6 +5,7 @@ import {Request, Response} from 'express';
 import { Inspections } from '../../models/inpectionsmodel';
 import {MQHandler, MQListener} from "../../utils/MQHandler";
 import { Channel } from 'amqplib';
+import { MentionRole } from '../../models/mentionRoles';
 
 //const MQHandler = require('../utils/MQHandler-CrossCompatible')      //THIS IS SHITE
      ///This is just crude way to ensure connection creation (will be fixed)
@@ -49,15 +50,17 @@ export const webhookController = {
         ///2-save sent data
         ///3-send/publish relative data into rabbit mq (implement MQ Handler) 
    
-        const {webhookid, token} = req.params;
+        const {webhookid} = req.params;
         const inspectionObejct = req.body.inspection;  ///refer to scrutinizer documentation
         const inspectionId = randomBytes(12).toString('hex');
-        const inspectionState = inspectionObejct.state;
+        const {state, created_at} = inspectionObejct;
         const inspectionBuildStatus = inspectionObejct.build.status;
-        const inspection_creation_date = inspectionObejct.created_at;
         const repo_name = getRepoNameFromUrl(inspectionObejct._links.repository.href);
 
-        const inspection = await Inspections.create({inspection_id:inspectionId, state: inspectionState, build_status: inspectionBuildStatus, inspection_creation_date: inspection_creation_date , repo_name: repo_name ,  webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)});       ///Maybe wrap this in a try catch instead of creating this inspection const
+        
+
+
+        const inspection = await Inspections.create({inspection_id:inspectionId, state: state, build_status: inspectionBuildStatus, inspection_creation_date: created_at , repo_name: repo_name ,  webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)});       ///Maybe wrap this in a try catch instead of creating this inspection const
         if(!inspection){ //success
             res.status(500).json({
                 status : "Faliure",
@@ -65,10 +68,14 @@ export const webhookController = {
             })
         }
         
+        const branchName = JSON.parse(inspection.inspection_json).metadata.branch;
+        const commitMessage = JSON.parse(inspection.inspection_json).metadata.title;
         const inspectionMessage = {
             repoName: repo_name,
+            branch: branchName ,
+            commitMessage: commitMessage,
             inspection_id : inspection.inspection_id,
-            createdAt: inspection_creation_date, /// Maybe find a way to get the actual time of creation that was a couple ms ago...just maybe(FIXED)
+            createdAt: created_at, /// Maybe find a way to get the actual time of creation that was a couple ms ago...just maybe(FIXED)
             buildStatus : JSON.parse(inspection.inspection_json).status
 
         };  ///just doin this for logging
@@ -78,17 +85,18 @@ export const webhookController = {
         const user = await WebhookTokens.findOne({where : {webhook_id: webhookid}})
         console.log("USER CID = ", user?.discord_channel_id);
         
+        const role = await MentionRole.findOne({where: {webhook_id: webhookid}});
+        
         const inspectionBody = {
             guildId: user?.discord_guild_id,
             discordChannel: user?.discord_channel_id,
-            status : "sucess",
+            roleId : role?.role_id,
+            status : state,
             inspectionData : inspectionMessage 
         }
 
-
-        
-
         const channel : Channel = await MQHandler.createChannel('SCD-CH1');
+
         (await MQHandler.getInstance()).sendToQueue(channel,"SCD-INSPECTION-CREATE", Buffer.from(JSON.stringify(inspectionBody)))
         .then(()=>{
             res.status(200).json(inspectionBody);
@@ -100,6 +108,7 @@ export const webhookController = {
         })
 
     },
+
     async setupWebhookNotificationChannel(req: Request, res: Response){
         console.log('Setup Notifications channel \n\n   OLD ONEEEE AFTER HEADDD')
         res.status(200).json({message: "OK"})

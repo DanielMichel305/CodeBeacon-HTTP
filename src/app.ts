@@ -1,9 +1,11 @@
 import express, {Application} from 'express';
 import apiBaseRouter from './app/routers/api/apiBaseRouter';
 import dashboardRouter from './app/routers/dashboard/dashboard-router';
-import authRouter from './app/routers/auth/auth-router';
+
 import { BaseEventController } from './app/controllers/baseEventController';
+import { RPCController } from './app/controllers/RPCController';
 import { MQHandler } from './app/utils/MQHandler';
+
 
 
 require('dotenv').config();
@@ -14,9 +16,17 @@ const app : Application = express();
 
 const mqEventHandler = new BaseEventController();
 
-(async()=>{
+
+(async()=>{         ///refactor this shitshow
     await mqEventHandler.init();
-    mqEventHandler.startMessageQueueListener('SCD-DISCORD-COMM');    
+    mqEventHandler.startMessageQueueListener('SCD-DISCORD-COMM');
+    const channel = mqEventHandler.getMQListener()?.getChannel();
+    
+    const rpcChannel = await MQHandler.createChannel('RPC');
+    const rpc: RPCController = new RPCController(rpcChannel,'RPC-QUEUE',(req): any=>{
+        console.log(`[RPC_LOG] NEW RPC CALL, ${req}`);
+    })
+    
 })();
 
 
@@ -24,7 +34,7 @@ const mqEventHandler = new BaseEventController();
 app.use(express.json());
 app.use('/api',apiBaseRouter);
 app.use('/d', dashboardRouter);
-app.use('/auth', authRouter);
+
 
 
 app.get('/', (req,res)=>{

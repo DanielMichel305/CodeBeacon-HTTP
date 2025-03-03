@@ -8,6 +8,7 @@ const sequelize = DBHandler.getDBInstance();
 export class MentionRole extends Model<InferAttributes<MentionRole>, InferCreationAttributes<MentionRole>>{
     declare webhook_id: ForeignKey<WebhookTokens['webhook_id']>;
     declare role_id: string;
+    declare role_name: string;
     declare notification_type : number;
 }
 
@@ -22,6 +23,9 @@ MentionRole.init(
             type: DataTypes.CHAR(20),
             allowNull: false
         },
+        role_name :{
+            type : DataTypes.CHAR(32)
+        },
         notification_type:{
             type: DataTypes.SMALLINT(),
             defaultValue: 0
@@ -35,9 +39,9 @@ MentionRole.init(
 
 
 
-WebhookTokens.sync({ alter: true })  
+MentionRole.sync({ alter: true })  
   .then(() => {
-    console.log('webhook_tokens Table synced');
+    console.log('mention_roles Table synced');
   })
   .catch(err => {
     console.error('Failed to sync webhook_tokens table:', err);
