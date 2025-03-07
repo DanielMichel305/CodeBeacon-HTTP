@@ -4,7 +4,18 @@ import { MentionRole } from "../../models/mentionRoles";
 import { NotificationChannel } from "../../models/notificationChannelModel";
 import { WebhookTokens } from "../../models/webhooktokensmodel";
 import { Inspections } from "../../models/inpectionsmodel";
+import { BotInvites } from "../../models/botInvites";
+import AuthController from './authController';
 
+interface DiscordUser {
+    id: string;
+    username: string;
+    accessToken: string;
+  }
+
+type Guild = {
+    id: string
+}
 
 
 type GuildChannel = {
@@ -20,13 +31,14 @@ type GuildChannel = {
 }
 
 
-export default class DashboardApiController{
+export default class DashboardController{
 
     constructor(){
         
     }
 
 
+   
     private static async fetchGuildRoles(guildId: string){
         console.log(`[LOG] FETCHING ${guildId} Channels`)
         const accessToken = process.env.DISCORD_TOKEN as string;
@@ -43,6 +55,8 @@ export default class DashboardApiController{
      
         
     }
+
+     
 
     private static async fetchGuildChannels(guildId: string){
         console.log(`[LOG] FETCHING ${guildId} Channels`)
@@ -61,6 +75,8 @@ export default class DashboardApiController{
         }
         
     }
+
+
     private static filterGuildChannels(guildChannels: Array<GuildChannel>){
         const channels =  guildChannels.filter((guild)=>
             (guild.type === 4 || guild.type === 0)
@@ -77,6 +93,79 @@ export default class DashboardApiController{
         return sanitizedChannels;
         
     }
+
+
+    private static async fetchBotGuildList(){
+        const BOT_Token = process.env.DISCORD_TOKEN as string;
+        const response = await fetch("https://discord.com/api/v10/users/@me/guilds" ,{
+            headers :{
+                Authorization : `Bot ${BOT_Token}`
+            }
+        })
+        if(!response.ok){
+            console.log(`[ERROR] Failed to fetch Bot Guilds`)
+            return new Set();
+        }
+        const botGuilds :Guild[] = await response.json();
+        return new Set(botGuilds.map(guild=>guild.id)); 
+
+    }
+
+
+    private static async getUserManagedGuilds(userGuilds: any){
+        const userManagedGuilds = AuthController.filterUserManagedGuilds(userGuilds);
+        const botGuilds = await DashboardController.fetchBotGuildList();
+        const commonGuilds = userManagedGuilds.map((guild)=>({
+            ...guild,
+            existing_member: botGuilds.has(guild.id)
+        }));
+        return commonGuilds;
+    }
+
+
+    public async serveDashboard(req: Request, res: Response){
+        if(req.user){
+            let userArray = req.user as any[];
+            const user = userArray[0] as DiscordUser 
+            
+            const userGuilds = await AuthController.getUserGuilds(user.accessToken);            ///THIS WON'T WORK BARDO SINCE ACCESS TOKEN EXPIRES IN 1 HOUR AND WE EFFIN STORE THE ACCESS TOKEN
+            const userManagedGuilds = await DashboardController.getUserManagedGuilds(userGuilds);
+            
+
+            res.render('dashboard', {guilds: userManagedGuilds})
+        }
+        
+    }
+
+
+    public async inviteBot(req:Request, res:Response){
+        const {userId, guildId} = req.body;
+        if(!userId || !guildId){
+            res.status(400).json(
+                {
+                    message: "required parameters userId and guildId are missing in the request body."
+                }
+            )
+        }
+        else{
+            const invite = await BotInvites.findOrCreate({where: {guild_id:guildId}, 
+                defaults : {
+                    user_id: userId,
+                    guild_id: guildId
+                }
+            })
+            if(invite){
+                res.status(200).json(
+                    {
+                        message : "Invite Generated successfully"
+                    }
+                )
+            }
+
+        }
+        
+    } 
+
 
     public async getGuildSettings(req: Request, res: Response){
         //do Auth and auth first
@@ -107,10 +196,10 @@ export default class DashboardApiController{
             }
         }) || "Not Set";
 
-        const userGuildChannel = await DashboardApiController.fetchGuildChannels(guildId);
-        const filteredChannels = DashboardApiController.filterGuildChannels(userGuildChannel) as GuildChannel[]
+        const userGuildChannel = await DashboardController.fetchGuildChannels(guildId);
+        const filteredChannels = DashboardController.filterGuildChannels(userGuildChannel) as GuildChannel[]
         
-        const guildRoles = await DashboardApiController.fetchGuildRoles(guildId);
+        const guildRoles = await DashboardController.fetchGuildRoles(guildId);
 
 
         const response = {
@@ -128,6 +217,21 @@ export default class DashboardApiController{
             
         }
         res.json(response);
+    }
+
+    
+    public async inviteBotInstance(req: Request, res: Response){
+        const {guildId} = req.params;
+        const userId = (req.user as DiscordUser)?.id
+
+        const invite = await BotInvites.findOrCreate({where: {guild_id:guildId}, 
+            defaults : {
+                user_id: userId,
+                guild_id: guildId
+            }
+        })
+
+
     }
 
 }

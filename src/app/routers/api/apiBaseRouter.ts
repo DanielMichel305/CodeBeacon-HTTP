@@ -2,7 +2,7 @@
 // const webhookRouter = require('./webhookRouter')
 import express, {Router} from 'express';
 import webhookRouter from "./webhookRouter";
-import dashboardApiRouter from './dashboardApiRouter';
+import dashboardApiRouter from './dashboardRouter';
 
 const apiBaseRouter: Router = express.Router();
 

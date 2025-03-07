@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Code Beacon Project</title>
+</head>
+<body>
+    <div style="display: inline-block; ">
+        <h2>The Code Beacon Project</h2>
+        <%if (!user) { %>
+            <button>Login</button>
+            <button>Sign up</button>    
+        <%} else {%>
+            <p>Hello, <%=user.username%> <p>
+        <%}%>
+    </div>
+    
+</body>
+</html>
