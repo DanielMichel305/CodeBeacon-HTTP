@@ -1,4 +1,4 @@
-import express, {Application, Request,Response} from 'express';
+import express, {Application, NextFunction, Request,Response} from 'express';
 import session from 'express-session'
 
 import path from 'path';
@@ -60,6 +60,14 @@ app.use('/d', dashboardRouter);
 app.use('/auth', authRouter)
 
 
+function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");     ////////////////CHANGE THIS TO /AUTH/DISCORD || HOMEPAGE
+}
+
+
 app.get('/', (req: Request, res: Response)=>{
     
     let userArray: any[];
@@ -72,8 +80,8 @@ app.get('/', (req: Request, res: Response)=>{
     res.render('site', {user:  user});
 })
 
-app.get('/dashboard', dashboard.serveDashboard);
-app.get('/invite/:guildId', passport.authenticate('discord', {failureRedirect : '/', failureMessage : 'Sign in using discord first'}),dashboard.inviteBotInstance);
+app.get('/dashboard', isAuthenticated, dashboard.serveDashboard);
+app.get('/invite/:guildId',isAuthenticated, dashboard.inviteBotInstance);
 
 
 

@@ -1,14 +1,12 @@
 import { DBHandler } from "../../models/dbHandler";
 import { Request, Response } from "express";
 import { MentionRole } from "../../models/mentionRoles";
-import { NotificationChannel } from "../../models/notificationChannelModel";
 import { WebhookTokens } from "../../models/webhooktokensmodel";
-import { Inspections } from "../../models/inpectionsmodel";
 import { BotInvites } from "../../models/botInvites";
 import AuthController from './authController';
 
 interface DiscordUser {
-    id: string;
+    discord_UID: string;
     username: string;
     accessToken: string;
   }
@@ -219,17 +217,25 @@ export default class DashboardController{
         res.json(response);
     }
 
-    
-    public async inviteBotInstance(req: Request, res: Response){
-        const {guildId} = req.params;
-        const userId = (req.user as DiscordUser)?.id
 
-        const invite = await BotInvites.findOrCreate({where: {guild_id:guildId}, 
+    public async inviteBotInstance(req: Request, res: Response){
+        
+        const {guildId} = req.params;
+        const userArray = req.user as any[];
+        const user = userArray[0] as DiscordUser 
+
+        console.log(`[LOG] Generating an Invite for ${guildId}. User Id : ${JSON.stringify(user.discord_UID)}`)
+
+        const [invite,created] = await BotInvites.findOrCreate({where: {guild_id:guildId}, 
             defaults : {
-                user_id: userId,
+                user_id: user.discord_UID,
                 guild_id: guildId
             }
         })
+        if(invite){
+            res.redirect(`https://discord.com/oauth2/authorize?client_id=1332364038885216266&permissions=19456&scope=bot&guild_id=${guildId}&disable_guild_select=true`)
+        }
+        res.status(500).send('Failed To Generate an Invite, Try again later.');
 
 
     }

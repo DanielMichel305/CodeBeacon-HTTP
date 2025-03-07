@@ -47,7 +47,7 @@ export class MQHandler{
 
     private static instance: MQHandler 
     private static connection? : amqp.Connection;
-    private static channels: Map<string, amqp.Channel>
+    private static channels: Map<string, amqp.Channel> = new Map();
     public static url: string
 
     private  constructor(){

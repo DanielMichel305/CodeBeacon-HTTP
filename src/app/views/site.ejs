@@ -5,14 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Code Beacon Project</title>
 </head>
+<style>
+    .abtn{
+        text-decoration: none;
+        padding: 5%;
+        background-color: blueviolet;
+        color: aliceblue;
+        border-radius: 5%;
+    }
+    .abtn:hover{
+        box-shadow: 3%;
+        background-color: rgb(159, 89, 224);
+    }
+</style>
 <body>
     <div style="display: inline-block; ">
         <h2>The Code Beacon Project</h2>
         <%if (!user) { %>
-            <button>Login</button>
-            <button>Sign up</button>    
+            <a class="abtn" href="/auth/discord">Sign in with discord</a>
+            
         <%} else {%>
             <p>Hello, <%=user.username%> <p>
+            <a class="abtn" href="/dashboard">Dashboard</a>
         <%}%>
     </div>
     
