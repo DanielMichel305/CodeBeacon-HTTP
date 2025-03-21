@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,6 +22,7 @@
 </style>
 
 <body style="background-color: #ffffff ;">
+    <%- include ('./partials/navbar.ejs') %>
     <div style="display: flex; flex-wrap: wrap; flex-direction: row;  border: medium solid #16001F; justify-content: space-around; border-radius: 3%/15%; ">
     <% guilds.forEach(guild => { %>
         <div style=" border-radius: 1rem; border-color: rgb(57, 45, 214); padding: 1%; margin: 15px; min-width: 5vw; min-height: 100px; background-color: gray; max-width: min-content;">
@@ -40,5 +41,121 @@
     </div>
 
 
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="google" content="notranslate">
+  <title>Code Beacon - Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    /* Additional styles specific to the admin dashboard */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+    }
+    .dashboard-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    .dashboard-card {
+      background: rgba(30, 30, 30, 0.19);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease-in-out;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+    }
+    .dashboard-card img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+    }
+    .dashboard-card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .btn {
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: inline-block;
+      transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+      font-size: 1rem;
+    }
+    .btn.primary {
+      background-color: rgb(82, 73, 207);
+      color: aliceblue;
+      border: none;
+    }
+    .btn.primary:hover {
+      background-color: rgb(102, 83, 227);
+      transform: scale(1.05);
+    }
+    .btn.secondary {
+      background-color: rgb(50, 50, 50);
+      color: aliceblue;
+      border: none;
+    }
+    .btn.secondary:hover {
+      background-color: rgb(70, 70, 70);
+      transform: scale(1.05);
+    }
+    /* Adjust the container to add extra space for the fixed nav */
+    .container {
+      margin-top: 120px; /* Increase if your nav height is larger */
+      padding: 20px;
+    }
+    /* Page Title */
+    .page-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      color: #121212;
+    }
+  </style>
+</head>
+<body style="background-color: #ffffff;">
+    <%- include('partials/navbar') %>
+  <main class="container">
+    <h1 class="page-title">Admin Dashboard</h1>
+    <div class="dashboard-container">
+      <% guilds.forEach(guild => { %>
+        <div class="dashboard-card">
+          <% let iconImage = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`; if (!guild.icon) { iconImage = 'https://cdn.discordapp.com/embed/avatars/0.png'; } %>
+          <img src="<%- iconImage %>" alt="<%- guild.name %>">
+          <h2><%- guild.name %></h2>
+          <% if (guild.existing_member) { %>
+            <a class="btn primary" href="/api/dashboard/<%- guild.id %>/">Manage Dashboard</a>
+          <% } else { %>
+            <a class="btn secondary" href="/invite/<%- guild.id %>">Invite to <%- guild.name %></a>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </main>
 </body>
 </html>

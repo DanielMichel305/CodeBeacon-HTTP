@@ -1,4 +1,4 @@
-
+import { Request,Response } from "express";
 const GuildManageRole = 0x20  ///Bitfield value for roles that manage a server
 
 type Guild = {
@@ -13,6 +13,17 @@ type Guild = {
 export default class AuthController {
 
     
+    public static logout(req: Request, res: Response){
+        req.session.destroy(err=>{
+            if(err){
+                console.log(`[ERROR] Failed to destory session. ${err}`);
+                res.status(500).send('Error: Couldn\'t logout');
+            }
+        })
+        res.clearCookie('jwt', {path:'/'})
+        res.redirect('/')
+    }
+
 
     public static async getUserGuilds(accessToken: string){
         
@@ -46,11 +57,6 @@ export default class AuthController {
     }
 
 
-    public static isAuthenticated(req, res, next) {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        res.redirect("/login");
-    }
+    
 
 }

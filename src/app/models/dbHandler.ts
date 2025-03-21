@@ -7,11 +7,6 @@ require('dotenv').config();
 
 
 
-console.log("USERNAME : " + process.env.SCD_DB1_USER);
-
-
-
-
 export class DBHandler  {  //This aint working 
     
     private static instance : DBHandler | null = null;

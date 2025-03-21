@@ -1,34 +1,447 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Code Beacon Project</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Code Beacon Project - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/public/images/favicon.ico">
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+        font-family: Arial, sans-serif;
+  /* Force the gradient to cover everything */
+  background: radial-gradient(
+      125% 125% at -2% 101%,
+      rgba(245, 87, 2, 1) 10.5%,
+      rgba(245, 120, 2, 1) 16%,
+      rgba(245, 140, 2, 1) 17.5%,
+      rgba(245, 170, 100, 1) 25%,
+      rgba(238, 174, 202, 1) 40%,
+      rgba(202, 179, 214, 1) 65%,
+      rgba(148, 201, 233, 1) 100%
+    )
+    no-repeat center center fixed;
+  background-size: cover;
+  color: #2a2f32;
+  overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    /* Page Wrapper */
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* Advanced Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Main Container */
+    .container {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 20px 40px; /* extra top padding to account for fixed nav */
+    }
+    /* Hero Section */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4rem;
+      margin-top: 5rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .hero-text {
+      flex: 1;
+      min-width: 280px;
+      color: aliceblue;
+    }
+    .hero-text h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #2a2f32;
+    }
+    .hero-text .cta-button {
+      background: transparent;
+      border: 3px solid #2a2f32;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.1rem;
+      color: #2a2f32;
+      border-radius: 4px;
+      transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+    .hero-text .cta-button:hover {
+      background-color: #00ff9c70;
+      transform: scale(1.05, 1.05);
+      box-shadow: 0px 0px 20px #AFE5C7;
+      transition: 0.3s ease-in-out;
+    }
+    .hero-visual {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Placeholder for illustration image */
+      background: rgba(255,255,255,0.1);
+      border: 1px dashed #0ff;
+      border-radius: 16px;
+      height: 300px;
+    }
+    /* Features Grid */
+
+    .full-width-wave {
+        width: 100vw;               /* Use the full viewport width */
+        margin-left: calc(50% - 50vw);  /* Shift it to start at the left edge of the viewport */
+        overflow: hidden;           /* Hide any overflow */
+        line-height: 0;             /* Remove extra space */
+       
+    }
+
+    .wave-divider {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: 4rem;
+    }
+    .section-bg{
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    .features {
+     
+      margin-top: 4rem;
+      margin-bottom: 4rem;
+      text-align: center;
+    }
+    .features h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .feature-card {
+      background: rgba(30, 30, 30, 0.19);
+      border: 1px solid #ffffff99;
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: transform 0.3s ease-in-out;
+    }
+    .feature-card:hover {
+      transform: translateY(-8px);
+    }
+    .feature-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #0ff;
+    }
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .feature-card p {
+      font-size: 1rem;
+      color: #ccc;
+    }
+    /* How It Works Section */
+    .how-it-works {
+      margin-bottom: 4rem;
+      text-align: center;
+    }
+    .how-it-works h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+    .timeline {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .timeline-step {
+      flex: 1;
+      min-width: 150px;
+      position: relative;
+      padding: 1rem;
+      background: rgba(30, 30, 30, 0.19);
+      border: 1px solid #ffffff99;
+      border-radius: 16px;
+      transition: transform 0.3s ease-in-out;
+    }
+    .timeline-step:hover {
+      transform: translateY(-5px);
+    }
+    .timeline-step::before {
+      content: attr(data-step);
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0ff;
+      color: #121212;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .timeline-step p {
+      font-size: 0.95rem;
+      color: #ccc;
+      margin-top: 1.5rem;
+    }
+    /* Final CTA Section */
+    .final-cta {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .final-cta h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+    .final-cta .cta-button {
+      background: transparent;
+      border: 2px solid #0ff;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.1rem;
+      color: #0ff;
+      border-radius: 4px;
+      transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+    .final-cta .cta-button:hover {
+      background-color: rgba(0, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #1e1e1e, #121212);
+      padding: 2rem;
+      border-top: 1px solid #0ff;
+      color: aliceblue;
+    }
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-logo {
+      flex: 1;
+      font-family: 'Major Mono Display', monospace;
+      font-size: 1.8rem;
+    }
+    .footer-links {
+      flex: 1;
+      display: flex;
+      justify-content: space-around;
+    }
+    .footer-links ul {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+    .footer-links a {
+      transition: color 0.3s ease-in-out;
+    }
+    .footer-links a:hover {
+      color: #0ff;
+    }
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-visual {
+        width: 100%;
+        height: 250px;
+      }
+      .timeline {
+        flex-direction: column;
+      }
+      .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .footer-links {
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
-<style>
-    .abtn{
-        text-decoration: none;
-        padding: 5%;
-        background-color: blueviolet;
-        color: aliceblue;
-        border-radius: 5%;
-    }
-    .abtn:hover{
-        box-shadow: 3%;
-        background-color: rgb(159, 89, 224);
-    }
-</style>
 <body>
-    <div style="display: inline-block; ">
-        <h2>The Code Beacon Project</h2>
-        <%if (!user) { %>
-            <a class="abtn" href="/auth/discord">Sign in with discord</a>
-            
-        <%} else {%>
-            <p>Hello, <%=user.username%> <p>
-            <a class="abtn" href="/dashboard">Dashboard</a>
-        <%}%>
+  
+  <%- include ('./partials/navbar.ejs') %>
+  
+  <!-- Page Wrapper -->
+  <div class="page-wrapper">
+    <!-- Main Container -->
+    <div class="container">
+      <!-- Hero Section -->
+      <section class="hero fade-in">
+        <div class="hero-text">
+          <h1>Instant CI Alerts in Your Discord Server</h1>
+          <p>Get real-time notifications, access historical data, and command your CI like never before—all from one platform.</p>
+          <a href="/auth/discord" class="cta-button">Get Started for <strong>Free</strong></a>
+        </div>
+        <div class="hero-visual fade-in">
+          <!-- Placeholder for illustration -->
+          
+          <img src="/public/images/CodeBeacon Inspection.webp" alt="Sample Notification sent in discord" title="">
+        </div>
+      </section>
+      
+
+      <div class="full-width-wave fade-in">
+        <svg class="wave-divider" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path fill="#ffffff" fill-opacity="0.2" 
+                d="M0,160L80,138.7C160,117,320,75,480,85.3C640,96,800,160,960,181.3C1120,203,1280,181,1360,170.7L1440,160V320H0Z">
+          </path>
+        </svg>
+      </div>
+      
+
+
+      <!-- Features Section -->
+      <section class="section-bg features fade-in">
+        <h2>Key Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="icon">⚡</div>
+            <h3>Real-Time Alerts</h3>
+            <p>Instant notifications delivered to your Discord server for every inspection and build event.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">📊</div>
+            <h3>Historical Data</h3>
+            <p>Access a complete history of inspections and build results at your fingertips.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">💡</div>
+            <h3>Actionable Insights</h3>
+            <p>Generate detailed reports and monitor code quality with ease.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🔌</div>
+            <h3>Easy Integration</h3>
+            <p>Seamlessly connect with Scrutinizer-CI and other CI tools with minimal setup.</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- How It Works Section -->
+      <section class="how-it-works fade-in">
+        <h2>How It Works</h2>
+        <div class="timeline">
+          <div class="timeline-step" data-step="1">
+            <h3>Connect CI</h3>
+            <p>Link your CI platform with a few simple clicks.</p>
+          </div>
+          <div class="timeline-step" data-step="2">
+            <h3>Install Bot</h3>
+            <p>Add our Discord bot to your server effortlessly.</p>
+          </div>
+          <div class="timeline-step" data-step="3">
+            <h3>Get Alerts</h3>
+            <p>Receive real-time notifications for every build event.</p>
+          </div>
+          <div class="timeline-step" data-step="4">
+            <h3>Retrieve Data</h3>
+            <p>Access historical data and generate detailed reports.</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Final CTA Section -->
+      <section class="final-cta fade-in">
+        <h2>Ready to Transform Your CI Workflow?</h2>
+        <a href="#" class="cta-button">Get Started for Free</a>
+      </section>
     </div>
     
+    <!-- Footer -->
+    <footer class="fade-in">
+      <div class="footer-container">
+        <div class="footer-logo">The Code Beacon Project</div>
+        <div class="footer-links">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Features</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Integration Guides</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Terms & Privacy</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- Scroll Animation Script -->
+  <script>
+    const faders = document.querySelectorAll('.fade-in');
+    const footer = document.querySelector('footer.fade-in');
+    const appearOptions = {
+      threshold: 0.2,
+      rootMargin: "0px 0px -50px 0px"
+    };
+    const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(entry => {
+        if (entry.target === footer) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          } else {
+            entry.target.classList.remove('visible');
+          }
+        } else {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, appearOptions);
+    
+    faders.forEach(fader => {
+      appearOnScroll.observe(fader);
+    });
+  </script>
 </body>
 </html>

@@ -1,0 +1,70 @@
+<link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap" rel="stylesheet" />
+<style>
+@keyframes neonGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); }
+      50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
+    }
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(30, 30, 30, 0.9);
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    animation: neonGlow 3s ease-in-out infinite;
+    color: aliceblue;
+  }
+  nav .logo {
+    font-family: 'Major Mono Display', monospace;
+    font-size: 1.8rem;
+    color: aliceblue;
+  }
+  nav .nav-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  nav .nav-links a,
+  nav .auth-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    transition: background-color 0.3s ease-in-out, border 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+  nav .nav-links a:hover,
+  nav .auth-btn:hover {
+    background-color: rgba(0, 255, 255, 0.2);
+    border: 1px solid #0ff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transform: scale(1.06);
+    transition: 0.4s;
+  }
+  nav .auth-btn {
+    background: transparent;
+    border: 1px solid #0ff;
+    border-radius: 4px;
+    color: #0ff;
+    cursor: pointer;
+  }
+</style>
+<nav class="fade-in">
+    <div class="logo">The Code Beacon Project</div>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/pricing">Pricing</a>
+      <%if (!user) { %>
+        <a class="abtn" href="/auth/discord">sign in with discord</a>
+
+    <%} else {%>
+        
+        <a class="abtn" href="/dashboard">Dashboard</a>
+    <%}%>
+      
+    </div>
+  </nav>

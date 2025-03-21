@@ -9,7 +9,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
     declare username: string;
     declare email: string;
     declare locale: string;
-    declare accessToken: string;
+    
     declare verified: boolean;
 }
 
@@ -30,10 +30,6 @@ User.init({
     locale :{
         type : DataTypes.CHAR(5),
         defaultValue: "en-US"
-    },
-    accessToken :{
-        type : DataTypes.CHAR(30),
-        allowNull: false
     },
     verified:{
         type: DataTypes.BOOLEAN,

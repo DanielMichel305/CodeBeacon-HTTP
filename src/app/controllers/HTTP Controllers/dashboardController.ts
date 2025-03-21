@@ -9,6 +9,7 @@ interface DiscordUser {
     discord_UID: string;
     username: string;
     accessToken: string;
+    refreshToken : string;
   }
 
 type Guild = {
@@ -125,12 +126,12 @@ export default class DashboardController{
         if(req.user){
             let userArray = req.user as any[];
             const user = userArray[0] as DiscordUser 
-            
-            const userGuilds = await AuthController.getUserGuilds(user.accessToken);            ///THIS WON'T WORK BARDO SINCE ACCESS TOKEN EXPIRES IN 1 HOUR AND WE EFFIN STORE THE ACCESS TOKEN
+            console.log(`[LOG ] Access Token : ${req.session.user?.accessToken}`);
+            const userGuilds = await AuthController.getUserGuilds(req.session.user!.accessToken as string);            ///THIS WON'T WORK BARDO SINCE ACCESS TOKEN EXPIRES IN 1 HOUR AND WE EFFIN STORE THE ACCESS TOKEN
             const userManagedGuilds = await DashboardController.getUserManagedGuilds(userGuilds);
             
 
-            res.render('dashboard', {guilds: userManagedGuilds})
+            res.render('dashboard', {guilds: userManagedGuilds, user: req.session.user})
         }
         
     }

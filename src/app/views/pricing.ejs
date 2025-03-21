@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Code Beacon Project - Pricing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap" rel="stylesheet" />
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      width: 100%;
+      min-height: 100vh;
+      background: radial-gradient(
+        125% 125% at -2% 101%,
+        rgba(245, 87, 2, 1) 10.5%,
+        rgba(245, 120, 2, 1) 16%,
+        rgba(245, 140, 2, 1) 17.5%,
+        rgba(245, 170, 100, 1) 25%,
+        rgba(238, 174, 202, 1) 40%,
+        rgba(202, 179, 214, 1) 65%,
+        rgba(148, 201, 233, 1) 100%
+      );
+      color: #fff;
+      overflow-x: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    /* Page Wrapper: ensures footer stays at the bottom */
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .container {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 20px 40px; /* extra top padding to account for fixed nav */
+    }
+    /* Advanced Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+   
+    /* Pricing Section */
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .pricing-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .pricing-header p {
+      font-size: 1.1rem;
+      color: #ddd;
+    }
+    .pricing-cards {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .pricing-card {
+      background: rgba(30, 30, 30, 0.19);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(3.4px);
+      -webkit-backdrop-filter: blur(3.4px);
+      border: 1px solid #ffffff99;
+      border-radius: 16px;
+      padding: 2rem;
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+      transition: transform 0.3s ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-card:hover {
+      transform: translateY(-10px);
+    }
+    .pricing-card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .price {
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 1.5rem;
+      padding: 0;
+    }
+    .pricing-features li {
+      margin-bottom: 0.75rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .pricing-features li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #0ff;
+    }
+    .cta-button {
+      display: block;
+      text-align: center;
+      margin: 0 auto;
+      background: transparent;
+      border: 1px solid #0ff;
+      padding: 0.75rem 1.5rem;
+      color: #0ff;
+      border-radius: 4px;
+      transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+      width: fit-content;
+    }
+    .cta-button:hover {
+      background-color: rgba(0, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #1e1e1e, #121212);
+      padding: 2rem;
+      border-top: 1px solid #0ff;
+    }
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-logo {
+      flex: 1;
+      font-family: 'Major Mono Display', monospace;
+      font-size: 1.8rem;
+    }
+    .footer-links {
+      flex: 1;
+      display: flex;
+      justify-content: space-around;
+    }
+    .footer-links ul {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+    .footer-links a {
+      transition: color 0.3s ease-in-out;
+    }
+    .footer-links a:hover {
+      color: #0ff;
+    }
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .pricing-cards {
+        flex-direction: column;
+        align-items: center;
+      }
+      .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .footer-links {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <%- include ('./partials/navbar.ejs') %>
+
+  <!-- Page Wrapper -->
+  <div class="page-wrapper">
+    <!-- Main Container -->
+    <div class="container">
+      <!-- Pricing Header -->
+      <section class="pricing-header fade-in">
+        <h1>Pricing</h1>
+        <p>Choose the plan that fits your team—from individual projects to growing startups.</p>
+      </section>
+
+      <!-- Pricing Cards -->
+      <section class="pricing-cards">
+        <!-- Free Tier -->
+        <div class="pricing-card fade-in">
+          <h2>Free Tier</h2>
+          <div class="price">$0<span style="font-size:1rem;">/month</span></div>
+          <ul class="pricing-features">
+            <li>Real-Time Notifications</li>
+            <li>Historical Data Access</li>
+            <li>Basic Code Quality Insights</li>
+            <li>Scrutinizer-CI Integration</li>
+          </ul>
+          <a href="#" class="cta-button">Get Started for Free</a>
+        </div>
+        <!-- Pro Tier -->
+        <div class="pricing-card fade-in" style="border-color: greenyellow; box-shadow:  0 0 30px greenyellow;">
+          <h2>Pro Tier</h2>
+          <div class="price">$3.99<span style="font-size:1rem;">/month</span></div>
+          <ul class="pricing-features">
+            <li>Everything in Free</li>
+            <li>Unlimited Notifications</li>
+            <li>Advanced Reporting</li>
+            <li>Multiple CI Integrations</li>
+            <li>Priority Support</li>
+          </ul>
+          <a href="#" class="cta-button">Upgrade to Pro</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="fade-in">
+      <div class="footer-container">
+        <div class="footer-logo">The Code Beacon Project</div>
+        <div class="footer-links">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Integration Guides</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Terms & Privacy</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scroll Animation Script -->
+  <script>
+    const faders = document.querySelectorAll('.fade-in');
+    const footer = document.querySelector('footer.fade-in');
+    const appearOptions = {
+      threshold: 0.2,
+      rootMargin: "0px 0px -50px 0px"
+    };
+    const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(entry => {
+        if (entry.target === footer) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          } else {
+            entry.target.classList.remove('visible');
+          }
+        } else {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, appearOptions);
+
+    faders.forEach(fader => {
+      appearOnScroll.observe(fader);
+    });
+  </script>
+</body>
+</html>

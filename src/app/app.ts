@@ -1,19 +1,25 @@
-import express, {Application, NextFunction, Request,Response} from 'express';
+import express, {Application, NextFunction, Request,response,Response} from 'express';
 import session from 'express-session'
 
 import path from 'path';
 import passport from './utils/passport-config';
 
-
+import { DBHandler } from './models/dbHandler';
 import { BaseEventController } from './controllers/baseEventController';
 import { authGuildAccess, RPCController } from './controllers/RPCController';
 import { MQHandler } from './utils/MQHandler';
+import { JWTAuthMiddleware } from './routers/AuthRouter';
 import apiBaseRouter from './routers/api/apiBaseRouter';
 import dashboardRouter from './routers/dashboard/dashboard-router';
 import authRouter from './routers/AuthRouter';
 import DashboardController from './controllers/HTTP Controllers/dashboardController';
+import cookieParser from 'cookie-parser';
 
 
+
+import connectSessionStore  from 'connect-session-sequelize'
+
+const SequelizeStore = connectSessionStore(session.Store);
 
 require('dotenv').config();
 
@@ -24,14 +30,25 @@ const app : Application = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname,'public')));
+app.use('/public',express.static(path.join(__dirname,'../../public')));
+app.use(cookieParser());
 
+
+let sessionStore = new SequelizeStore({
+    db: DBHandler.getDBInstance(),
+    checkExpirationInterval : 60*1000,       ////Changed this to like 1 min
+    expiration : 60*60*1000
+})
 
 app.use(session({
-    secret: process.env.SESSION_SECRET!,
+    secret: process.env.JWT_SECRET!,
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
 }));
+
+sessionStore.sync();
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -69,19 +86,18 @@ function isAuthenticated(req: Request, res: Response, next: NextFunction) {
 
 
 app.get('/', (req: Request, res: Response)=>{
-    
-    let userArray: any[];
-    let user = null;
-    if(req.user){
-        userArray = req.user as any[];
-        user = userArray[0];
-    }
+   
+    let user = req.session.user;
+
     
     res.render('site', {user:  user});
 })
-
-app.get('/dashboard', isAuthenticated, dashboard.serveDashboard);
-app.get('/invite/:guildId',isAuthenticated, dashboard.inviteBotInstance);
+app.get('/pricing', (req: Request, res:Response)=>{
+    let user = req.session.user;
+    res.render('pricing', {user:user})
+});
+app.get('/dashboard', JWTAuthMiddleware, dashboard.serveDashboard);
+app.get('/invite/:guildId',JWTAuthMiddleware, dashboard.inviteBotInstance);
 
 
 
