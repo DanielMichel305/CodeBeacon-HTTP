@@ -1,6 +1,6 @@
 import { MQHandler, MQListener } from "../utils/MQHandler";
 import {Channel, ConsumeMessage} from 'amqplib';
-import {WebhookTokens} from '../models/webhooktokensmodel';
+import {WebhookTokens} from '../models/webhooks';
 import { NotificationChannel } from "../models/notificationChannelModel";
 import { MentionRole } from "../models/mentionRoles";
 

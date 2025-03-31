@@ -1,7 +1,7 @@
 import { DBHandler } from "../../models/dbHandler";
 import { Request, Response } from "express";
 import { MentionRole } from "../../models/mentionRoles";
-import { WebhookTokens } from "../../models/webhooktokensmodel";
+import { WebhookTokens } from "../../models/webhooks";
 import { BotInvites } from "../../models/botInvites";
 import AuthController from './authController';
 

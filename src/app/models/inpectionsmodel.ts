@@ -1,6 +1,6 @@
 import { Sequelize,Model,Optional,DataTypes, InferAttributes, InferCreationAttributes , ForeignKey} from "sequelize";
 import { DBHandler } from "./dbHandler";
-import { WebhookTokens } from "./webhooktokensmodel";
+import { WebhookTokens } from "./webhooks";
 
 
 const sequelize = DBHandler.getDBInstance();

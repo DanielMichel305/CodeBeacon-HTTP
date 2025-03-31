@@ -8,8 +8,6 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
     declare discord_UID : string;
     declare username: string;
     declare email: string;
-    declare locale: string;
-    
     declare verified: boolean;
 }
 
@@ -26,10 +24,6 @@ User.init({
     email :{
         type: DataTypes.STRING,
         allowNull: true
-    },
-    locale :{
-        type : DataTypes.CHAR(5),
-        defaultValue: "en-US"
     },
     verified:{
         type: DataTypes.BOOLEAN,

@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 import {DBHandler} from '../../models/dbHandler';
-import {WebhookTokens} from '../../models/webhooktokensmodel';
+import {WebhookTokens} from '../../models/webhooks';
 import {Request, Response} from 'express';
 import { Inspections } from '../../models/inpectionsmodel';
 import {MQHandler, MQListener} from "../../utils/MQHandler";
