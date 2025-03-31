@@ -127,8 +127,8 @@ export default class DashboardController{
             let userArray = req.user as any[];
             const user = userArray[0] as DiscordUser 
             console.log(`[LOG ] Access Token : ${req.session.user?.accessToken}`);
-            const userGuilds = await AuthController.getUserGuilds(req.session.user!.accessToken as string);            ///THIS WON'T WORK BARDO SINCE ACCESS TOKEN EXPIRES IN 1 HOUR AND WE EFFIN STORE THE ACCESS TOKEN
-            const userManagedGuilds = await DashboardController.getUserManagedGuilds(userGuilds);
+            const userGuilds = await AuthController.getUserGuilds(req.session.user!.accessToken as string) || null;            ///THIS WON'T WORK BARDO SINCE ACCESS TOKEN EXPIRES IN 1 HOUR AND WE EFFIN STORE THE ACCESS TOKEN
+            const userManagedGuilds = await DashboardController.getUserManagedGuilds(userGuilds) || null;
             
 
             res.render('dashboard', {guilds: userManagedGuilds, user: req.session.user})

@@ -1,48 +1,4 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code beacon - Admin Dashboard</title>
-    
-</head>
-
-<style>
-    .abtn{
-        text-decoration: none;
-        padding: 2%;
-        background-color: blueviolet;
-        color: aliceblue;
-        border-radius: 5%;
-    }
-    .abtn:hover{
-        box-shadow: 3%;
-        background-color: rgb(159, 89, 224);
-    }
-</style>
-
-<body style="background-color: #ffffff ;">
-    <%- include ('./partials/navbar.ejs') %>
-    <div style="display: flex; flex-wrap: wrap; flex-direction: row;  border: medium solid #16001F; justify-content: space-around; border-radius: 3%/15%; ">
-    <% guilds.forEach(guild => { %>
-        <div style=" border-radius: 1rem; border-color: rgb(57, 45, 214); padding: 1%; margin: 15px; min-width: 5vw; min-height: 100px; background-color: gray; max-width: min-content;">
-            <%let iconImage = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`; if(!guild.icon) iconImage = 'https://cdn.discordapp.com/embed/avatars/0.png' %>
-
-            <img style="border-radius: 50%;" src= <%-iconImage%> alt=<%-guild.name%> width="100" height="100"><br>
-            <% if(guild.existing_member) {%>
-
-            <a class="abtn" style="background-color: rgb(82, 73, 207);  color: aliceblue;" href="http://localhost:8080/api/dashboard/<%-guild.id%>/"><%-guild.name%></a>
-            <% } else { %>
-                <a class="abtn" style="background-color: rgb(50, 50, 50);  color: aliceblue;" href="/invite/<%-guild.id%>"><%- `Invite to ${guild.name}` %></a>
-            <% } %>
-        </div>
-
-    <% }) %>
-    </div>
-
-
-</body>
-</html> -->
+<!-- 
 
 
 
@@ -157,5 +113,582 @@
       <% }) %>
     </div>
   </main>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap SPA Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+
+    body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
+main {
+  height: 100vh;
+  height: -webkit-fill-available;
+  max-height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+
+.dashboard-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    .dashboard-card {
+      background: rgba(30, 30, 30, 0.19);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease-in-out;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+    }
+    .dashboard-card img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+    }
+    .dashboard-card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+
+
+    .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 70px;
+    padding: 20px;
+    
+    overflow-y: scroll;
+    max-height: 90lvh;
+}
+
+.dropdown-toggle { outline: 0; }
+
+.btn-toggle {
+  padding: .25rem .5rem;
+  font-weight: 600;
+  color: var(--bs-emphasis-color);
+  background-color: transparent;
+}
+.btn-toggle:hover,
+.btn-toggle:focus {
+  color: rgba(var(--bs-emphasis-color-rgb), .85);
+  background-color: var(--bs-tertiary-bg);
+}
+
+.btn-toggle::before {
+  width: 1.25em;
+  line-height: 0;
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+  transition: transform .35s ease;
+  transform-origin: .5em 50%;
+}
+
+[data-bs-theme="dark"] .btn-toggle::before {
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28255,255,255,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+}
+
+.btn-toggle[aria-expanded="true"] {
+  color: rgba(var(--bs-emphasis-color-rgb), .85);
+}
+.btn-toggle[aria-expanded="true"]::before {
+  transform: rotate(90deg);
+}
+
+.btn-toggle-nav a {
+  padding: .1875rem .5rem;
+  margin-top: .125rem;
+  margin-left: 1.25rem;
+}
+.btn-toggle-nav a:hover,
+.btn-toggle-nav a:focus {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.scrollarea {
+  overflow-y: auto;
+}
+
+
+
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        width: 100%;
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
+      .bd-mode-toggle {
+        z-index: 1500;
+      }
+
+      .bd-mode-toggle .dropdown-menu .active .bi {
+        display: block !important;
+      }
+
+
+
+  </style>
+</head>
+<body>
+  <!-- Navbar with Repo Dropdown -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Dashboard</a>
+      <!-- Repository Dropdown -->
+      <div class="dropdown me-3">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="repoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Select Repository
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="repoDropdown">
+          <li><a class="dropdown-item" href="#" data-repo="all">All Repositories</a></li>
+          <li><a class="dropdown-item" href="#" data-repo="Repo-A">Repo-A</a></li>
+          <li><a class="dropdown-item" href="#" data-repo="Repo-B">Repo-B</a></li>
+          <li><a class="dropdown-item" href="#" data-repo="Repo-C">Repo-C</a></li>
+        </ul>
+      </div>
+      <span class="navbar-text text-white">
+        Logged in as <strong><%- user.username || "Guest"%></strong>   <!--user.username actually exists-->
+      </span>
+    </div>
+  </nav>
+
+  <!-- sidebar -->
+
+  <div class="d-flex">
+  <div class="flex-shrink-0 p-3" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
+      <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-5 fw-semibold">Collapsible</span>
+    </a>
+    <ul class="list-unstyled ps-0">
+      <li class="mb-1">
+        <a href="#webhooks" id="webhooks-tab" class="link-body-emphasis d-inline-flex text-decoration-none rounded mx-4" data-bs-toggle="tab"  aria-controls="webhooks">
+          Webhook endpoints
+        </a>
+      </li>
+      <li class="mb-1">
+        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+          Discord Integration
+        </button>
+        <div class="collapse" id="dashboard-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li><a href="#discord-invites" id="discord-invites-tab" class="link-body-emphasis d-inline-flex text-decoration-none rounded" data-bs-toggle="tab"  aria-controls="discord-invites">Invites</a></li>
+            <li><a href="#discord-settings" id="discord-settings-tab" class="link-body-emphasis d-inline-flex text-decoration-none rounded" data-bs-toggle="tab"  aria-controls="discord-settings">Settings</a></li>
+            
+          </ul>
+        </div>
+      </li>
+      <li class="mb-1">
+        <a href="#analytics" id="analytics-tab" class="link-body-emphasis d-inline-flex text-decoration-none rounded mx-4" data-bs-toggle="tab" aria-controls="analytics">
+          Analytics
+        </a>
+        
+      </li>
+      <li class="border-top my-3"></li>
+      <!-- <li class="mb-1">
+        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+          Account
+        </button>
+        <div class="collapse" id="account-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">New...</a></li>
+            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Profile</a></li>
+            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Settings</a></li>
+            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Sign out</a></li>
+          </ul>
+        </div>
+      </li> -->
+    </ul>
+  </div>
+  
+  <div class="b-example-divider b-example-vr"></div>
+    
+ <!-- Main Content with Tab Panes -->
+ <div class="container-fluid p-4">
+  <div class="tab-content" id="dashboardTabs">
+    <!-- Webhook Endpoints Tab Pane -->
+    <div class="tab-pane fade show active" id="webhooks" role="tabpanel" aria-labelledby="webhooks-tab">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h2>Webhook Endpoints</h2>
+        </div>
+        <div class="card-body">
+          <p>Manage webhook endpoints for the selected repository.</p>
+          <button class="btn btn-success mb-3">Create New Webhook</button>
+          <table class="table table-bordered" id="endpoints-table">
+            <thead class="table-light">
+              <tr>
+                <th>Repository</th>
+                <th>Endpoint Name</th>
+                <th>Endpoint URL</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-repo="Repo-A">
+                <td>Repo-A</td>
+                <td>Build Notifications</td>
+                <td>https://api.example.com/webhook/build</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                  <button class="btn btn-primary btn-sm">Edit</button>
+                  <button class="btn btn-danger btn-sm">Delete</button>
+                  <button class="btn btn-info btn-sm" onclick="openInviteModal('Build Notifications')">Invite Settings</button>
+                </td>
+              </tr>
+              <tr data-repo="Repo-B">
+                <td>Repo-B</td>
+                <td>Test Alerts</td>
+                <td>https://api.example.com/webhook/test</td>
+                <td><span class="badge bg-secondary">Inactive</span></td>
+                <td>
+                  <button class="btn btn-primary btn-sm">Edit</button>
+                  <button class="btn btn-danger btn-sm">Delete</button>
+                  <button class="btn btn-info btn-sm" onclick="openInviteModal('Test Alerts')">Invite Settings</button>
+                </td>
+              </tr>
+              <tr data-repo="Repo-C">
+                <td>Repo-C</td>
+                <td>Deployment Notifications</td>
+                <td>https://api.example.com/webhook/deploy</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>
+                  <button class="btn btn-primary btn-sm">Edit</button>
+                  <button class="btn btn-danger btn-sm">Delete</button>
+                  <button class="btn btn-info btn-sm" onclick="openInviteModal('Deployment Notifications')">Invite Settings</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Discord Integration Tab Pane -->
+    <div class="tab-pane fade" id="discord-settings" role="tabpanel" aria-labelledby="discord-settings-tab">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h2>Discord Integration</h2>
+        </div>
+        <div class="card-body">
+          <p>Configure your Discord settings for notifications:</p>
+          <div class="mb-3">
+            <label for="server-select" class="form-label">Select Server:</label>
+            <select id="server-select" class="form-select">
+              <option>Select a server</option>
+              <option>Server 1</option>
+              <option>Server 2</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="channel-select" class="form-label">Select Channel:</label>
+            <select id="channel-select" class="form-select">
+              <option>Select a channel</option>
+              <option>#general</option>
+              <option>#notifications</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="roles-select" class="form-label">Roles to Mention:</label>
+            <select id="roles-select" class="form-select" multiple>
+              <option>@everyone</option>
+              <option>@devs</option>
+              <option>@admins</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Invites Tab Pane -->
+    <div class="tab-pane fade" id="discord-invites" role="tabpanel" aria-labelledby="discord-invites-tab">
+      <div class="card mb-4">
+        <div class="card-header" style="max-height: 90lvh;">
+          <h2>Invite Management</h2>
+          <p>Generate and manage your Discord bot invites:</p>
+        </div>
+        <div class="card-body grid-container" >
+          
+          <% guilds.forEach(guild => { %>
+            <div class="dashboard-card">
+              <% let iconImage = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`; if (!guild.icon) { iconImage = 'https://cdn.discordapp.com/embed/avatars/0.png'; } %>
+              <img src="<%- iconImage %>" alt="<%- guild.name %>">
+              <h2><%- guild.name %></h2>
+              <% if (guild.existing_member) { %>
+                <a class="btn primary" href="/api/dashboard/<%- guild.id %>/">Manage Dashboard</a>
+              <% } else { %>
+                <a class="btn secondary" href="/invite/<%- guild.id %>">Invite to <%- guild.name %></a>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Analytics Tab Pane -->
+    <div class="tab-pane fade" id="analytics" role="tabpanel" aria-labelledby="analytics-tab">
+      <div class="card">
+        <div class="card-header">
+          <h2>Analytics</h2>
+        </div>
+        <div class="card-body">
+          <p>Overview of your webhook activity:</p>
+          <div class="row text-center">
+            <div class="col-md-4 mb-3">
+              <div class="card p-3">
+                <h5>Total Webhooks Sent</h5>
+                <p class="display-6">120</p>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="card p-3">
+                <h5>Successful Deliveries</h5>
+                <p class="display-6">115</p>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="card p-3">
+                <h5>Failed Deliveries</h5>
+                <p class="display-6">5</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Settings Tab Pane -->
+    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+      <div class="card">
+        <div class="card-header">
+          <h2>Settings</h2>
+        </div>
+        <div class="card-body">
+          <p>Configure your dashboard preferences and integrations.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Help Tab Pane -->
+    <div class="tab-pane fade" id="help" role="tabpanel" aria-labelledby="help-tab">
+      <div class="card">
+        <div class="card-header">
+          <h2>Help</h2>
+        </div>
+        <div class="card-body">
+          <p>FAQ and support documentation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- Invite Modal (Bootstrap Modal) -->
+<div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="inviteModalLabel">Configure Invite for <span id="modalWebhookName"></span></h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <label for="inviteExpiry" class="form-label">Invite Expiry (minutes):</label>
+      <input type="number" class="form-control" id="inviteExpiry" placeholder="e.g., 60">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" onclick="saveInviteSettings()">Save</button>
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </div>
+</div>
+</div>
+  
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+
+
+(() => {
+      'use strict'
+      const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      tooltipTriggerList.forEach(tooltipTriggerEl => {
+      new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    })()
+  
+
+    ///////////////
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+  // First, get all tab triggers
+  const tabTriggers = document.querySelectorAll('a[data-bs-toggle="tab"]');
+  
+  // For each trigger, add a click handler
+  tabTriggers.forEach(function(triggerEl) {
+    triggerEl.addEventListener('click', function(event) {
+      event.preventDefault();
+      
+      // Hide all tab panes
+      document.querySelectorAll('.tab-pane').forEach(function(pane) {
+        pane.classList.remove('show', 'active');
+      });
+      
+      // Show the target pane
+      const targetId = this.getAttribute('href').substring(1); // Remove the # from the href
+      const targetPane = document.getElementById(targetId);
+      if (targetPane) {
+        targetPane.classList.add('show', 'active');
+      }
+      
+      // Update active state on sidebar items
+      tabTriggers.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  
+  // Activate the default tab (webhooks)
+  const defaultTab = document.querySelector('a[href="#webhooks"]');
+  if (defaultTab) {
+    defaultTab.click();
+  }
+});
+
+
+
+
+
+
+    // var triggerTabList = document.querySelectorAll('a[data-bs-toggle="tab"]')
+    // triggerTabList.forEach(triggerEl => {
+    //     var tabTrigger = new bootstrap.Tab(triggerEl)
+
+    //     triggerEl.addEventListener('click', event => {
+    //         event.preventDefault()
+    //         tabTrigger.show()
+    //     })
+    // })
+
+    
+    function saveInviteSettings() {
+      const expiry = document.getElementById('inviteExpiry').value;
+      alert('Invite settings saved! Expiry set to ' + expiry + ' minutes.');
+      var inviteModalEl = document.getElementById('inviteModal');
+      var modal = bootstrap.Modal.getInstance(inviteModalEl);
+      modal.hide();
+    }
+    
+    // Repository Dropdown Filtering
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const selectedRepo = this.getAttribute('data-repo');
+        document.getElementById('repoDropdown').innerText = this.innerText;
+        document.querySelectorAll('#endpoints-table tbody tr').forEach(row => {
+          if (selectedRepo === 'all' || row.getAttribute('data-repo') === selectedRepo) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
