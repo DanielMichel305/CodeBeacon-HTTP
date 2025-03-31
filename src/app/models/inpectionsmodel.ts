@@ -1,13 +1,13 @@
 import { Sequelize,Model,Optional,DataTypes, InferAttributes, InferCreationAttributes , ForeignKey} from "sequelize";
 import { DBHandler } from "./dbHandler";
-import { WebhookTokens } from "./webhooks";
+import { Webhook } from "./webhooks";
 
 
 const sequelize = DBHandler.getDBInstance();
 
 export class Inspections extends Model<InferAttributes<Inspections>,InferCreationAttributes<Inspections>>{
     declare inspection_id: string;
-    declare webhook_id:  ForeignKey<WebhookTokens['webhook_id']>;
+    declare webhook_id:  ForeignKey<Webhook['webhook_id']>;
     declare state: string;
     declare build_status: string;
     declare repo_name: string

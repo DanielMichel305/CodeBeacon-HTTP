@@ -1,12 +1,12 @@
 import { DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import { DBHandler } from "./dbHandler";
-import { WebhookTokens } from "./webhooks";
+import {DiscordIntegration} from './discordIntegration'
 
 const sequelize = DBHandler.getDBInstance();
 
 
 export class MentionRole extends Model<InferAttributes<MentionRole>, InferCreationAttributes<MentionRole>>{
-    declare webhook_id: ForeignKey<WebhookTokens['webhook_id']>;
+    declare integration_id: ForeignKey<DiscordIntegration['integration_id']>;
     declare role_id: string;
     declare role_name: string;
     declare notification_type : number;
@@ -15,8 +15,8 @@ export class MentionRole extends Model<InferAttributes<MentionRole>, InferCreati
 
 MentionRole.init(
     {
-        webhook_id: {
-            type: DataTypes.CHAR(32),
+        integration_id: {
+            type: DataTypes.CHAR(20),
             primaryKey: true
         },
         role_id:{
