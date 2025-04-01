@@ -37,18 +37,3 @@ MentionRole.init(
     }
 )
 
-
-MentionRole.belongsTo(DiscordIntegration, {
-    foreignKey: 'integration_id',
-    targetKey: 'integration_id',
-    constraints: false
-  });
-
-
-MentionRole.sync({ alter: true })  
-  .then(() => {
-    console.log('mention_roles Table synced');
-  })
-  .catch(err => {
-    console.error('Failed to sync webhook_tokens table:', err);
-  });

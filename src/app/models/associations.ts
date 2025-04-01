@@ -40,7 +40,8 @@ MentionRole.belongsTo(DiscordIntegration, {
 
 Webhook.hasMany(DiscordIntegration,{
     foreignKey: 'webhook_id',
-    sourceKey : 'webhook_id'
+    sourceKey : 'webhook_id',
+    as: 'discord_integration'
 })
 
 
