@@ -1,6 +1,7 @@
 import { DBHandler } from "./dbHandler";
 import {Model, InferAttributes, InferCreationAttributes,DataTypes, ForeignKey} from 'sequelize';
 import { User } from "./user";
+import { DiscordIntegration } from "./discordIntegration";
 
 
 const sequelize = DBHandler.getDBInstance();
@@ -13,7 +14,7 @@ export class Webhook extends Model<InferAttributes<Webhook>,InferCreationAttribu
     declare webhook_id: string;
     declare auth_token: string;
     declare repo_name : string;
-    declare webhook_status : string;
+    declare webhook_status : boolean;
 
 }
 
@@ -35,10 +36,12 @@ Webhook.init({
         },
         repo_name :{
             type : DataTypes.CHAR(32),
+            allowNull: true,
             defaultValue : "N/A"
         },
         webhook_status : {
             type: DataTypes.BOOLEAN,
+            allowNull: true,
             defaultValue : true
         }
 
@@ -50,12 +53,3 @@ Webhook.init({
         tableName:'webhooks'
     }
 );
-
-
-Webhook.sync({ alter: true })  
-  .then(() => {
-    console.log('webhook_tokens Table synced');
-  })
-  .catch(err => {
-    console.error('Failed to sync webhook_tokens table:', err);
-  });

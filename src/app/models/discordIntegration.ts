@@ -1,6 +1,7 @@
 import {Model, InferAttributes, InferCreationAttributes, DataTypes, ForeignKey} from 'sequelize'
 import { DBHandler } from './dbHandler';
 import { Webhook } from './webhooks';
+import { MentionRole } from './mentionRoles';
 
 const sequelize = DBHandler.getDBInstance();
 
@@ -40,10 +41,3 @@ DiscordIntegration.init(
     })
 
 
-DiscordIntegration.sync({ alter: true })  
-  .then(() => {
-    console.log('discord_integrations Table synced');
-  })
-  .catch(err => {
-    console.error('Failed to sync discord_integrations table:', err);
-  });

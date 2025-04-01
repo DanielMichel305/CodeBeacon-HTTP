@@ -38,6 +38,12 @@ MentionRole.init(
 )
 
 
+MentionRole.belongsTo(DiscordIntegration, {
+    foreignKey: 'integration_id',
+    targetKey: 'integration_id',
+    constraints: false
+  });
+
 
 MentionRole.sync({ alter: true })  
   .then(() => {

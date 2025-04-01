@@ -1,11 +1,16 @@
 import { randomBytes } from 'crypto';
 import {DBHandler} from '../../models/dbHandler';
-import {WebhookTokens} from '../../models/webhooks';
+//import {Webhook} from '../../models/webhooks';
 import {Request, Response} from 'express';
 import { Inspections } from '../../models/inpectionsmodel';
 import {MQHandler, MQListener} from "../../utils/MQHandler";
 import { Channel } from 'amqplib';
-import { MentionRole } from '../../models/mentionRoles';
+//import { MentionRole } from '../../models/mentionRoles';
+import { DiscordUser } from '../../utils/passport-config';
+
+
+import {Webhook, MentionRole } from '../../models/associations';
+
 
 //const MQHandler = require('../utils/MQHandler-CrossCompatible')      //THIS IS SHITE
      ///This is just crude way to ensure connection creation (will be fixed)
@@ -24,7 +29,7 @@ export const webhookController = {
     //initialize DB or sm
     async rootURI(req: Request  ,res: Response){
         const dbname = DBHandler.getDBInstance().databaseVersion();
-        const description = await WebhookTokens.describe();
+        const description = await Webhook.describe();
         if(!dbname || !description){
             res.send("NO DB Instance!"); ///crude way to test bas 
         }
@@ -37,7 +42,9 @@ export const webhookController = {
         const webhookId  = randomBytes(6).toString('hex'); ///find another way ?
         const token = randomBytes(10).toString('hex');
         //maybe have this part (discord channel) of the setup proccess bot side.
-        const webhook = await WebhookTokens.create({webhook_id: webhookId, auth_token:token, discord_guild_id: ""});
+        const user = req.session.user as DiscordUser;
+        const userId = user.discord_UID as string;
+        const webhook = await Webhook.create({user_id: userId, webhook_id: webhookId,repo_name: req.params.repo || "N/A", auth_token:token, webhook_status: true});
         res.status(200).json({
             url:`/api/webhooks/${webhook.webhook_id}/${webhook.auth_token}`,     //fix the intellisense non existent error
             webhook: webhook.toJSON()
@@ -81,11 +88,14 @@ export const webhookController = {
         };  ///just doin this for logging
 
         
+         /////THIS NEEDS A FIX 
+
         /////////////// so a JSON needs to be stingifieddd first
-        const user = await WebhookTokens.findOne({where : {webhook_id: webhookid}})
+        const user = await Webhook.findOne({where : {webhook_id: webhookid}})
         console.log("USER CID = ", user?.discord_channel_id);
         
         const role = await MentionRole.findOne({where: {webhook_id: webhookid}});
+        
         
         const inspectionBody = {
             guildId: user?.discord_guild_id,

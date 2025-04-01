@@ -16,6 +16,8 @@ import DashboardController from './controllers/HTTP Controllers/dashboardControl
 import cookieParser from 'cookie-parser';
 
 
+import {DiscordIntegration, Webhook, User, MentionRole, NotificationChannel, Inspections} from './models/associations';
+
 
 import connectSessionStore  from 'connect-session-sequelize'
 

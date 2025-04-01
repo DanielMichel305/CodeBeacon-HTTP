@@ -1,9 +1,9 @@
 import { DBHandler } from "../../models/dbHandler";
 import { Request, Response } from "express";
-import { MentionRole } from "../../models/mentionRoles";
-import { WebhookTokens } from "../../models/webhooks";
 import { BotInvites } from "../../models/botInvites";
 import AuthController from './authController';
+import {Webhook, DiscordIntegration, MentionRole } from '../../models/associations';
+
 
 interface DiscordUser {
     discord_UID: string;
@@ -169,7 +169,7 @@ export default class DashboardController{
     public async getGuildSettings(req: Request, res: Response){
         //do Auth and auth first
         const {guildId} = req.params;
-        const webhook = await WebhookTokens.findOne({ 
+        const integration = await DiscordIntegration.findOne({ 
             attributes :
             [
                 'webhook_id', 
@@ -178,7 +178,7 @@ export default class DashboardController{
                 'createdAt'
             ],
              where: {
-                discord_guild_id: guildId
+                discord_guild_id: guildId         ///include discord_integration changes!!!!
             }
         });
 
@@ -191,7 +191,7 @@ export default class DashboardController{
 
             ],
             where : {
-                webhook_id: webhook?.webhook_id
+                integration_id: integration?.integration_id
             }
         }) || "Not Set";
 
@@ -202,10 +202,10 @@ export default class DashboardController{
 
 
         const response = {
-            webhookData : webhook,
+            integration : integration,
             guild_settings:{
                 channels : {
-                    notificationChannel : webhook?.discord_channel_id,
+                    notificationChannel : integration?.discord_channel_id,
                     avilabeChannels : filteredChannels
                 },
                 roles : {
@@ -222,8 +222,8 @@ export default class DashboardController{
     public async inviteBotInstance(req: Request, res: Response){
         
         const {guildId} = req.params;
-        const userArray = req.user as any[];
-        const user = userArray[0] as DiscordUser 
+        
+        const user = req.session.user as DiscordUser; 
 
         console.log(`[LOG] Generating an Invite for ${guildId}. User Id : ${JSON.stringify(user.discord_UID)}`)
 

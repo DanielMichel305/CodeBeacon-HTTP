@@ -1,8 +1,9 @@
 import { MQHandler, MQListener } from "../utils/MQHandler";
 import {Channel, ConsumeMessage} from 'amqplib';
-import {WebhookTokens} from '../models/webhooks';
+import {Webhook} from '../models/webhooks';
 import { NotificationChannel } from "../models/notificationChannelModel";
 import { MentionRole } from "../models/mentionRoles";
+import { DiscordIntegration } from "../models/discordIntegration";
 
 export class BaseEventController {
 
@@ -52,7 +53,7 @@ export class BaseEventController {
     }
 
     public async botChannelSetupRoutine(setupData: any){       ///change any to messageType
-        await WebhookTokens.update({ discord_channel_id: setupData.channelId, discord_guild_id: setupData.guildID},{where: {webhook_id: setupData.webhookId}});
+        await DiscordIntegration.update({ discord_channel_id: setupData.channelId, discord_guild_id: setupData.guildID},{where: {webhook_id: setupData.webhookId}});
         await NotificationChannel.findOrCreate(
             {
                 where:{webhook_id: setupData.webhookId, discord_channel_id: setupData.channelId},
@@ -72,10 +73,12 @@ export class BaseEventController {
         
         if(!channel){return;} ///Just fix this
 
+        const integrationId = (await DiscordIntegration.findOne({where: {webhook_id: channel.webhook_id}}))?.integration_id as string || "ID or sum";          ///This is a MESSS!!
+        
         const [role, created] = await MentionRole.findOrCreate({
-            where: {webhook_id: channel.webhook_id, role_id: data.role_id},
+            where: {integration_id: integrationId, role_id: data.role_id},
             defaults:{
-                webhook_id:channel.webhook_id,
+                integration_id:integrationId,
                 role_id:data.role_id,
                 role_name :data.role_name,
                 notification_type: data.notification_type || 0

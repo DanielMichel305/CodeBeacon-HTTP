@@ -24,10 +24,3 @@ BotInvites.init({
     tableName:"bot_invites"
 })
 
-BotInvites.sync({alter:true})
-.then(()=>{
-    console.log(`bot_invites table synced to BotInvites Model `)
-})
-.catch(()=>{
-    console.log('[DB ERROR] Error Syncing bot_invites table to BotInvites Model');
-})

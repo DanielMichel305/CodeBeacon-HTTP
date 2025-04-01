@@ -1,5 +1,6 @@
 import { DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import { DBHandler } from "./dbHandler";
+import { Webhook } from "./webhooks";
 
 const sequelize = DBHandler.getDBInstance();
 
@@ -36,6 +37,12 @@ User.init({
     tableName: "users"
 });
 
+
+
+User.hasMany(Webhook, {
+    foreignKey: 'user_id',
+    sourceKey : 'discord_UID'
+})
 
 User.sync({ alter: true })  
   .then(() => {
