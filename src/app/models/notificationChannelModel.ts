@@ -28,11 +28,3 @@ NotificationChannel.init({
     }
 
 );
-
-NotificationChannel.sync({alter:true})
-.then(()=>{
-    console.log("NotificationChannel Model synced.")
-})
-.catch((err)=>{
-    console.log(`An Error Occured when Syncing NotificationChannel Model ${err}`);
-})

@@ -46,10 +46,24 @@ export const webhookController = {
         const userId = user.discord_UID as string;
         const webhook = await Webhook.create({user_id: userId, webhook_id: webhookId,repo_name: req.params.repo || "N/A", auth_token:token, webhook_status: true});
         res.status(200).json({
-            url:`/api/webhooks/${webhook.webhook_id}/${webhook.auth_token}`,     //fix the intellisense non existent error
+            url:`/api/webhooks/${webhook.webhook_id}/${webhook.auth_token}`,    
             webhook: webhook.toJSON()
         });
 
+
+    },
+    async fetchUserWebhooks(req: Request, res: Response){
+        if(!req.session.user){
+            res.status(401);
+        }
+        const userWebhooks = await Webhook.findAll({where: {user_id: req.session.user?.discord_UID}});
+       
+        res.status(200).json({
+            meta : {
+                number_of_webhooks: userWebhooks.length
+            },
+            webhooks: userWebhooks
+        });
 
     },
     async webhookListener(req :Request,res: Response){

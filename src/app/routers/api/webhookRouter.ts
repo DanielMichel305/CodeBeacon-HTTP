@@ -12,7 +12,8 @@ const authenticate = (req: Request,res: Response,next: NextFunction)=>{        /
     else next();
 };
 
-webhookRouter.get('/root', webhookController.createWebhook);
+webhookRouter.get('/create', webhookController.createWebhook);
+webhookRouter.get('/', webhookController.fetchUserWebhooks);
 webhookRouter.post('/:webhookid/:token',authenticate, webhookController.webhookListener);
 
 webhookRouter.head('/:webhookid/notification',webhookController.setupWebhookNotificationChannel);       ///temp remove the authenticate middleware
