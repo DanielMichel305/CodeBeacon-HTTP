@@ -91,34 +91,34 @@ export const webhookController = {
          /////THIS NEEDS A FIX 
 
         /////////////// so a JSON needs to be stingifieddd first
-        const user = await Webhook.findOne({where : {webhook_id: webhookid}, include : [{model: DiscordIntegration, as : "discord_integration"}]})
+        const webhook = await Webhook.findOne({where : {webhook_id: webhookid}, include : [{model: DiscordIntegration, as : "discord_integration"}]})
         //console.log("USER CID = ", user?.discord_channel_id);
         
-        const userData = (user as any).discord_integration as DiscordIntegration[];
-        console.log(`+--------------------+\n|${userData[0].discord_channel_id}|\n+--------------------+`)
+        const webhookDiscordIntegration = ((webhook as any).discord_integration as DiscordIntegration[])[0];    /////CHECK COMMENT! TLDR: This doesn't handle multiple webhook integrations/webhook
+        console.log(`+--------------------+\n|${webhookDiscordIntegration.discord_channel_id}|\n+--------------------+`);
 
-        //const role = await MentionRole.findOne({where: {webhook_id: webhookid}});
+        const role = await MentionRole.findOne({where: {integration_id : webhookDiscordIntegration.integration_id}, attributes : ['role_id']});
         
         
-        // const inspectionBody = {
-        //     guildId: user?.discord_guild_id,
-        //     discordChannel: user?.discord_channel_id,
-        //     roleId : role?.role_id,
-        //     status : state,
-        //     inspectionData : inspectionMessage 
-        // }
+        const inspectionBody = {
+            guildId: webhookDiscordIntegration?.discord_guild_id,
+            discordChannel: webhookDiscordIntegration?.discord_channel_id,
+            roleId : role?.role_id,
+            status : state,
+            inspectionData : inspectionMessage 
+        }
 
-        // const channel : Channel = await MQHandler.createChannel('SCD-CH1');
+        const channel : Channel = await MQHandler.createChannel('SCD-CH1');
 
-        // (await MQHandler.getInstance()).sendToQueue(channel,"SCD-INSPECTION-CREATE", Buffer.from(JSON.stringify(inspectionBody)))
-        // .then(()=>{
-        //     res.status(200).json(inspectionBody);
-        // })
-        // .catch(err=>{
-        //     console.log(`Error Sending Inpsection Data to Discord Bot, ${err}`);
-        //     res.status(500).json({message: "Error Sending Inspection Data to Discord Bot"});
+        (await MQHandler.getInstance()).sendToQueue(channel,"SCD-INSPECTION-CREATE", Buffer.from(JSON.stringify(inspectionBody)))
+        .then(()=>{
+            res.status(200).json(inspectionBody);
+        })
+        .catch(err=>{
+            console.log(`Error Sending Inpsection Data to Discord Bot, ${err}`);
+            res.status(500).json({message: "Error Sending Inspection Data to Discord Bot"});
 
-        // })
+        })
 
     },
 
