@@ -1,5 +1,5 @@
 import { Router,Request,Response,NextFunction } from "express";
-import DashboardApiController from "../../controllers/HTTP Controllers/dashboardController";
+import DashboardApiController from "../../controllers/dashboardController";
 
 const dashboardApiRouter: Router = Router();
 

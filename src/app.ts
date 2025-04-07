@@ -4,19 +4,19 @@ import session from 'express-session'
 import path from 'path';
 import passport from './utils/passport-config';
 
-import { DBHandler } from './models/dbHandler';
-import { BaseEventController } from './controllers/baseEventController';
-import { authGuildAccess, RPCController } from './controllers/RPCController';
+import { DBHandler } from './api/models/dbHandler';
+import { BaseEventController } from './broker/baseEventController';
+import { authGuildAccess, RPCController } from './broker/RPCController';
 import { MQHandler } from './utils/MQHandler';
-import { JWTAuthMiddleware } from './routers/AuthRouter';
-import apiBaseRouter from './routers/api/apiBaseRouter';
-import dashboardRouter from './routers/dashboard/dashboard-router';
-import authRouter from './routers/AuthRouter';
-import DashboardController from './controllers/HTTP Controllers/dashboardController';
+import { JWTAuthMiddleware } from './api/routers/AuthRouter';
+import apiBaseRouter from './api/routers/api/apiBaseRouter';
+import dashboardRouter from './api/routers/dashboard/dashboard-router';
+import authRouter from './api/routers/AuthRouter';
+import DashboardController from './api/controllers/dashboardController';
 import cookieParser from 'cookie-parser';
 
 
-import {DiscordIntegration, Webhook, User, MentionRole, NotificationChannel, Inspections} from './models/associations';
+import {DiscordIntegration, Webhook, User, MentionRole, NotificationChannel, Inspections} from './api/models/associations';
 
 
 import connectSessionStore  from 'connect-session-sequelize'

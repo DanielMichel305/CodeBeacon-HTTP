@@ -1,9 +1,9 @@
 import { MQHandler, MQListener } from "../utils/MQHandler";
 import {Channel, ConsumeMessage} from 'amqplib';
-import {Webhook} from '../models/webhooks';
-import { NotificationChannel } from "../models/notificationChannelModel";
-import { MentionRole } from "../models/mentionRoles";
-import { DiscordIntegration } from "../models/discordIntegration";
+import {Webhook} from '../api/models/webhooks';
+import { NotificationChannel } from "../api/models/notificationChannelModel";
+import { MentionRole } from "../api/models/mentionRoles";
+import { DiscordIntegration } from "../api/models/discordIntegration";
 
 export class BaseEventController {
 

@@ -2,7 +2,7 @@
 var amqp = require('amqplib/callback_api');
 require('dotenv').config();
 
-import {MQHandler} from "./app/utils/MQHandler"
+import {MQHandler} from "./MQHandler"
 
 console.log('AWAWA---')
 const mqhndlr = new MQHandler('SCD-DISCORD-QUEUE', true);

@@ -1,8 +1,8 @@
-import { DBHandler } from "../../models/dbHandler";
+import { DBHandler } from "../models/dbHandler";
 import { Request, Response } from "express";
-import { BotInvites } from "../../models/botInvites";
+import { BotInvites } from "../models/botInvites";
 import AuthController from './authController';
-import {Webhook, DiscordIntegration, MentionRole } from '../../models/associations';
+import {Webhook, DiscordIntegration, MentionRole } from '../models/associations';
 
 
 interface DiscordUser {

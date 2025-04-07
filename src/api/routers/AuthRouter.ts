@@ -2,8 +2,8 @@ import { Router, Response,Request, NextFunction } from "express";
 import passport from "passport";
 import { User } from "../models/user";
 import jwt from 'jsonwebtoken'
-import { DiscordUser } from "../utils/passport-config";
-import AuthController from "../controllers/HTTP Controllers/authController";
+import { DiscordUser } from "../../utils/passport-config";
+import AuthController from "../controllers/authController";
 
 
 const JWT_SECRET =  process.env.JWT_SECRET as string;

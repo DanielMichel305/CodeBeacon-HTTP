@@ -1,15 +1,15 @@
 import { randomBytes } from 'crypto';
-import {DBHandler} from '../../models/dbHandler';
+import {DBHandler} from '../models/dbHandler';
 //import {Webhook} from '../../models/webhooks';
 import {Request, Response} from 'express';
-import { Inspections } from '../../models/inpectionsmodel';
+import { Inspections } from '../models/inpectionsmodel';
 import {MQHandler, MQListener} from "../../utils/MQHandler";
 import { Channel } from 'amqplib';
 //import { MentionRole } from '../../models/mentionRoles';
 import { DiscordUser } from '../../utils/passport-config';
 
 
-import {Webhook, MentionRole, User, DiscordIntegration } from '../../models/associations';
+import {Webhook, MentionRole, User, DiscordIntegration } from '../models/associations';
 
 
 //const MQHandler = require('../utils/MQHandler-CrossCompatible')      //THIS IS SHITE

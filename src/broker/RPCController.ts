@@ -1,4 +1,4 @@
-import { BotInvites } from "../models/botInvites";
+import { BotInvites } from "../api/models/botInvites";
 import { MQListener } from "../utils/MQHandler";
 import {Channel, ConsumeMessage} from 'amqplib'
 
