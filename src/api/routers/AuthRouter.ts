@@ -9,6 +9,7 @@ import AuthController from "../controllers/authController";
 const JWT_SECRET =  process.env.JWT_SECRET as string;
 
 export function JWTAuthMiddleware(req:Request, res:Response ,next:NextFunction){
+    
     const token = req.cookies.jwt;
     if(!token) {
           res.status(401).json({message : "Unauthorized, Try to login again"});
