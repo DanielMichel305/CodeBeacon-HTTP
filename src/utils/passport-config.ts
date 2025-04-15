@@ -1,7 +1,7 @@
 import passport from 'passport';
 import {Strategy as DiscordStrategy} from 'passport-discord'
 import { Strategy as  JwtStrategy, ExtractJwt } from 'passport-jwt';
-import {User} from '../models/user'
+import {User} from '../api/models/user'
 import jwt from 'jsonwebtoken';
 import session from 'express-session';
 
@@ -30,7 +30,6 @@ passport.use(new DiscordStrategy({
                 discord_UID : profile.id,
                 username : profile.username,
                 email: profile.email || "N/A",
-                locale : profile.locale,
                 verified: profile.verified
             }
         }); ////Try catch 

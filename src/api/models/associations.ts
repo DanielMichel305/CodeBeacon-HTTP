@@ -12,6 +12,10 @@ DiscordIntegration.hasMany(MentionRole, {
    }) 
 
 
+  DiscordIntegration.belongsTo(Webhook, {
+    foreignKey : "webhook_id",
+    targetKey: "webhook_id"
+  })
 
   
 MentionRole.belongsTo(DiscordIntegration, {
