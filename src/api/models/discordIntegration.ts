@@ -7,7 +7,7 @@ const sequelize = DBHandler.getDBInstance();
 
 export class DiscordIntegration extends Model<InferAttributes<DiscordIntegration>, InferCreationAttributes<DiscordIntegration>> {
 
-    declare integration_id : string;
+    declare integration_id : null;
     declare webhook_id :ForeignKey<Webhook['webhook_id']> //fk 
     declare discord_guild_id : string;
     declare discord_channel_id : string;
@@ -18,8 +18,8 @@ export class DiscordIntegration extends Model<InferAttributes<DiscordIntegration
 DiscordIntegration.init(
     {
         integration_id : {
-            type : DataTypes.CHAR(20),
-            allowNull : false,
+            type : DataTypes.UUIDV4,
+            defaultValue: DataTypes.UUIDV4,
             primaryKey : true
         },
         webhook_id :{
