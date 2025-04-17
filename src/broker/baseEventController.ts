@@ -67,13 +67,21 @@ export class BaseEventController {
     }
 
     public async botMentionRoleSetupRoutine(data: any){
-        console.log("EDITING ROLES")
-        console.log(`----------------------------->${data.channelId}`);
-        const channel = await NotificationChannel.findOne({where:{discord_channel_id:data.channelId}});
+
+        const channel = await DiscordIntegration.findOne({
+            where:{
+                discord_channel_id:data.channelId
+            }
+        });
         
         if(!channel){return;} ///Just fix this
 
-        const integrationId = (await DiscordIntegration.findOne({where: {webhook_id: channel.webhook_id}}))?.integration_id as string || "ID or sum";          ///This is a MESSS!!
+        const integrationId = (await DiscordIntegration.findOne({
+            where:
+                {
+                webhook_id: channel.webhook_id
+            }
+        }))?.integration_id as string;          ///This is a MESSS!! //Not really?
         
         const [role, created] = await MentionRole.findOrCreate({
             where: {integration_id: integrationId, role_id: data.role_id},

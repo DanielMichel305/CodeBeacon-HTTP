@@ -66,7 +66,7 @@ export const webhookController = {
         });
 
     },
-    async webhookListener(req :Request,res: Response){
+    async webhookListener(req :Request,res: Response){      //This needs A LOT of error handling
         ///1-check webhook after authentication (already checked by 'fake' auth middleware)
         ///2-save sent data
         ///3-send/publish relative data into rabbit mq (implement MQ Handler) 
@@ -79,7 +79,7 @@ export const webhookController = {
         const repo_name = getRepoNameFromUrl(inspectionObejct._links.repository.href);
 
         
-
+        
 
         const inspection = await Inspections.create({inspection_id:inspectionId, state: state, build_status: inspectionBuildStatus, inspection_creation_date: created_at , repo_name: repo_name ,  webhook_id : webhookid, inspection_json: JSON.stringify(inspectionObejct)});       ///Maybe wrap this in a try catch instead of creating this inspection const
         if(!inspection){ //success
@@ -105,11 +105,25 @@ export const webhookController = {
          /////THIS NEEDS A FIX 
 
         /////////////// so a JSON needs to be stingifieddd first
-        const webhook = await Webhook.findOne({where : {webhook_id: webhookid}, include : [{model: DiscordIntegration, as : "discord_integration"}]})
-        //console.log("USER CID = ", user?.discord_channel_id);
+        const webhook = await Webhook.findOne({
+            where :{
+                webhook_id: webhookid
+            },
+            include : [{
+                model: DiscordIntegration, 
+                as : "discord_integration"
+            }]
+        })
         
+        
+        console.log(`webhook OBJ: ${JSON.stringify(webhook)}`);
+
         const webhookDiscordIntegration = ((webhook as any).discord_integration as DiscordIntegration[])[0];    /////CHECK COMMENT! TLDR: This doesn't handle multiple webhook integrations/webhook
-        console.log(`+--------------------+\n|${webhookDiscordIntegration.discord_channel_id}|\n+--------------------+`);
+
+        if(!webhookDiscordIntegration){
+            res.status(200).end();
+            return;
+        }
 
         const role = await MentionRole.findOne({where: {integration_id : webhookDiscordIntegration.integration_id}, attributes : ['role_id']});
         

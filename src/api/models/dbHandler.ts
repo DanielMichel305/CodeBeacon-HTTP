@@ -20,6 +20,7 @@ export class DBHandler  {  //This aint working
                  process.env.SCD_DB1_PASS as string,
                  {
                     dialect: 'mysql',
+                    logging: false,
                     host: process.env.SCD_DB1_HOST,
                     port: Number(process.env.SCD_DB1_PORT)
                 }
